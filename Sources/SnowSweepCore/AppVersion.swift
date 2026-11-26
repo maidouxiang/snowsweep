@@ -21,12 +21,13 @@ public struct AppVersion: Codable, Hashable, Sendable {
         return "\(display)（\(devTag)）"
     }
 
-    /// V0.9.33 雪签：新增样本导出器（`xue.sample/v1`），在本机完成路径模板化与
-    /// 文本脱敏，只输出区间与占位符。不新增删除能力，不改 4B 模型，不联网。
+    /// V0.9.34 雪滤：修正样本导出把“未提供具体路径”这类句子误当成路径、
+    /// 模板化成 `<name>` 的问题；只收 `/`、`~/` 开头的真实路径。
+    /// 不新增删除能力，不改 4B 模型，不联网。
     public static let current = AppVersion(
-        number: "0.9.33",
-        codeName: "雪签",
-        stage: "样本导出与脱敏",
+        number: "0.9.34",
+        codeName: "雪滤",
+        stage: "样本路径过滤修正",
         devTag: nil
     )
 }

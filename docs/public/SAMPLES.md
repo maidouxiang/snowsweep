@@ -35,7 +35,7 @@ xue-sample-<uuid>.zip
   "schema": "xue.sample/v1",
   "sample_id": "uuid",
   "created_at": "2026-11-27T10:00:00+08:00",
-  "app":    { "version": "0.9.33", "build": "0.9.33", "bundle_id": "com.selfuse.xue" },
+  "app":    { "version": "0.9.34", "build": "0.9.34", "bundle_id": "com.selfuse.xue" },
   "host":   { "macos": "26.x", "arch": "arm64", "locale": "zh_CN" },
   "rules":  { "version": "0.5.2", "sha256": "…" },
   "intent": { "category": "unknown", "query_redacted": "清理某个应用缓存" },
@@ -108,6 +108,7 @@ swift run SampleExport --fixture --out ~/Desktop/雪样本示例
 - `/Users/<你的名字>` 与其它绝对路径 → `~/...` 模板
 - 应用标识（`com.vendor.app`）与系统目录（`Library/Caches` 等）保留，其余层级 → `<name>` / `<hash>` / `<id>`
 - 用户原话先脱敏再截断；含路径或残留长编号的原话直接不导出，只留 `category`
+- 报告里“未提供具体路径”这类句子不算路径，直接丢弃，不会变成 `<name>`
 - 数量与体积只写区间
 
 `samples/fixtures/` 下有三份合成夹具（缓存 / 容器 / 文稿），可以直接对照字段，也可以拿去写测试。

@@ -219,15 +219,25 @@ public struct SampleRedactor: Sendable {
     }
 
     /// 同一角色的多条路径往往只有最后一段不同，合并后样本更干净。
+    /// 只接受真正的路径；报告里常见“未提供具体路径”这类句子，必须丢掉，
+    /// 否则会被模板化成 `<name>`，看起来像证据、实际是噪音。
     public func templates(_ paths: [String]) -> [String] {
         var seen: Set<String> = []
         var result: [String] = []
-        for path in paths {
+        for path in paths where Self.isPathLike(path) {
             let value = template(path)
             guard !value.isEmpty, seen.insert(value).inserted else { continue }
             result.append(value)
         }
         return result
+    }
+
+    /// 至少得像一个路径：以 `/`、`~/` 或 `~` 开头。其余一律按散文处理，不进 `paths`。
+    public static func isPathLike(_ value: String) -> Bool {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return false }
+        if trimmed.hasPrefix("/") || trimmed.hasPrefix("~/") { return true }
+        return trimmed == "~"
     }
 
     // MARK: 文本脱敏

@@ -265,3 +265,30 @@ import Testing
         #expect(!text.contains("9d41ab77c0de4f88"))
     }
 }
+
+@Test func templatesIgnoreProseEntries() {
+    let redactor = SampleRedactor(home: "/Users/example")
+    let result = redactor.templates(["未提供具体路径；只能从原话和现有规则反推候选目录"])
+
+    #expect(result.isEmpty)
+    #expect(SampleRedactor.isPathLike("/Users/example/Library/Caches"))
+    #expect(SampleRedactor.isPathLike("~/Library/Caches"))
+    #expect(!SampleRedactor.isPathLike("未提供具体路径"))
+}
+
+@Test func sampleFromProseOnlyCaseHasEmptyScope() {
+    let unknown = UnknownCase(
+        query: "某个应用该不该清",
+        reason: "报告没有给出路径",
+        observedPaths: ["未提供具体路径；只能从原话和现有规则反推候选目录"]
+    )
+    let sample = SampleExporter.sample(
+        from: unknown,
+        ruleBookVersion: "0.5.2",
+        ruleBookSHA256: String(repeating: "f", count: 64),
+        redactor: SampleRedactor(home: "/Users/example")
+    )
+
+    #expect(sample.observation.scope.isEmpty)
+    #expect(sample.paths.isEmpty)
+}

@@ -1,8 +1,8 @@
 {
   "app" : {
-    "build" : "0.9.33",
+    "build" : "0.9.34",
     "bundle_id" : "com.selfuse.xue",
-    "version" : "0.9.33"
+    "version" : "0.9.34"
   },
   "consent" : {
     "public_sample" : true,
@@ -10,7 +10,7 @@
     "sample_license" : "CC0-1.0",
     "screenshots" : false
   },
-  "created_at" : "2026-11-26T19:33:05Z",
+  "created_at" : "2026-11-26T19:43:56Z",
   "host" : {
     "arch" : "arm64",
     "locale" : "zh_CN",
@@ -45,7 +45,7 @@
     "sha256" : "1782cb37997ea672e368cf31989617e43b1d4a42fd2ffe01cbc11adcf75c7e5a",
     "version" : "0.5.2"
   },
-  "sample_id" : "D7DEBD15-50C8-494E-BE50-13FF570B6D58",
+  "sample_id" : "6DB25551-B6DB-497E-B643-DBB7245901FC",
   "schema" : "xue.sample/v1",
   "verdict" : {
     "closest_rules" : [
