@@ -129,3 +129,10 @@ Keychain 内容或 shell 历史。原始诊断请走私密渠道，不要贴在�
 ## 致谢
 
 感谢 [Mole](https://github.com/tw93/Mole) 提供的开源清理基座，以及所有提交规则与样本的贡献者。
+
+## 镜像
+
+- 主仓库：<https://github.com/maidouxiang/snowsweep>
+- 国内只读镜像：<https://gitee.com/photographer-jiang-xiao/snowsweep>
+
+镜像仅同步 commit，issue 与 PR 只在 GitHub 受理。
