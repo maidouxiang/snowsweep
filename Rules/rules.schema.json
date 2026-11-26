@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://snowweep.local/schemas/rules.schema.json",
+  "title": "SnowSweep RuleBook",
+  "description": "规则库唯一事实来源的结构约束。任何 typo（如 risk: Safe）都必须在此被拒绝，不得静默忽略。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "protectedPaths", "rules"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "updatedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "_readme": {
+      "type": "string"
+    },
+    "protectedPaths": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/pathPattern" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "rules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/rule" },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "pathPattern": {
+      "type": "string",
+      "minLength": 1,
+      "description": "通配符：* 不跨 /；** 跨目录层；? 匹配单个非 / 字符。"
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "risk", "name", "pathPattern", "reason", "needConfirm"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "risk": {
+          "type": "string",
+          "enum": ["safe", "review", "protected"]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "中文标识名，界面直接展示。"
+        },
+        "pathPattern": { "$ref": "#/$defs/pathPattern" },
+        "owner": {
+          "type": ["string", "null"]
+        },
+        "rebuildCost": {
+          "type": "string",
+          "enum": ["none", "low", "high", "irreplaceable"]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "一句人话解释，作为规则证据保留，不被模型输出覆盖。"
+        },
+        "needConfirm": {
+          "type": "boolean",
+          "description": "为 true 时即使 risk 为 safe，默认也不勾选。"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "default": 0
+        },
+        "excludeParents": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "命中路径若位于这些父目录下，规则不生效。用于防御 dist/__pycache__ 误伤系统目录。"
+        },
+        "allowOverrideProtection": {
+          "type": "boolean",
+          "default": false,
+          "description": "仅显式为 true 的内置规则可穿透保护清单；用户规则强制为 false。"
+        },
+        "source": {
+          "type": "string",
+          "enum": ["builtin", "user"],
+          "default": "builtin",
+          "description": "规则来源。user 规则由用户自定义叠加层提供，升级时保留。"
+        }
+      }
+    }
+  }
+}

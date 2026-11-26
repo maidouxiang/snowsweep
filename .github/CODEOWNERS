@@ -1,0 +1,25 @@
+# CODEOWNERS
+# TODO 首次建仓时把 maintainer-placeholder 替换为真实 GitHub 用户名（去掉尖括号）
+# 语法：路径模式  @用户名
+
+# 默认：所有文件
+*                       @maidouxiang
+
+# 规则库：改动必须两人复核（维护者 + 规则审查者）
+/Rules/                 @maidouxiang
+/Rules/rules.schema.json @maidouxiang
+
+# 判定与删除链路
+/Sources/SnowSweepCore/ @maidouxiang
+
+# 治理、许可、模板
+/.github/               @maidouxiang
+/LICENSE                @maidouxiang
+/NOTICE                 @maidouxiang
+/GOVERNANCE.md          @maidouxiang
+/SECURITY.md            @maidouxiang
+/TRADEMARK.md           @maidouxiang
+
+# 构建与安装脚本（涉及签名与 /Applications 写入）
+/scripts/               @maidouxiang
+/install-selfuse.sh     @maidouxiang

@@ -1,0 +1,55 @@
+name: 功能建议
+description: 提出新功能、体验改进或架构建议。
+title: "[feature] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先读 `docs/public/ROADMAP.md` 的“已知不做项”，避免与既定边界冲突。
+        注意：任何削弱“规则决定、默认不删、零遥测”的建议都不会被采纳。
+
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 使用场景
+      description: 你在什么情况下需要它？用应用名而非真实路径描述。
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+      description: 你希望它怎么工作；如果涉及删除或权限，请说明安全边界。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: touches-delete
+    attributes:
+      label: 是否涉及删除 / 权限 / 联网
+      options:
+        - 不涉及，纯展示或体验
+        - 涉及删除判定
+        - 涉及权限提升
+        - 涉及联网或上传
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 替代方案与不做的影响
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认
+      options:
+        - label: 我没有粘贴真实路径、截图或个人信息
+          required: true
+        - label: 我理解本项目为个人维护，不承诺排期与发布日期
+          required: true

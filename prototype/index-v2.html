@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SnowSweep · 界面原型 v2（看得懂版）</title>
+<style>
+:root{--bg:#dfe3ea;--win:#f6f7f9;--side:#e9ebf0;--card:#fff;--hover:#eceef3;--inset:#f0f2f6;
+--t1:#1d1d1f;--t2:#6b6f76;--t3:#9a9ea6;--blue:#0a7cff;--blue-s:#e6f1ff;--green:#1f9d68;--green-s:#e5f5ed;
+--orange:#da8500;--orange-s:#fdf0d9;--red:#d63a34;--red-s:#fbe9e8;--gray:#8e9099;--gray-s:#eeeff2;
+--purple:#8b5cf6;--purple-s:#f0eafd;--bd:rgba(0,0,0,.09);--bd2:rgba(0,0,0,.15);--r:12px;
+--font:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--t1);background:var(--bg);min-height:100vh;
+display:flex;align-items:center;justify-content:center;padding:46px 20px 30px;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+svg{display:block}
+.menubar{position:fixed;top:0;left:0;right:0;height:30px;background:rgba(248,249,251,.85);
+backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);
+display:flex;align-items:center;justify-content:space-between;padding:0 15px;border-bottom:.5px solid rgba(0,0,0,.1);z-index:100;font-size:13px}
+.menu-left,.menu-right{display:flex;align-items:center;height:100%}
+.menu-left{gap:17px}.menu-right{gap:13px;font-size:12px;color:#2b2b2e}
+.apple{width:15px;height:15px}.menu-item{font-weight:500;white-space:nowrap}.menu-item.strong{font-weight:600}
+.status-item{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.status-item svg{width:14px;height:14px}
+.snow-btn{display:flex;align-items:center;gap:5px;padding:0 7px;height:22px;border-radius:5px;font-weight:600;color:#0a6fd8}
+.snow-btn:hover,.snow-btn.on{background:rgba(10,124,255,.12)}
+.snow-btn svg{width:15px;height:15px}
+.mini-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* 菜单栏下拉面板 */
+.menu-pop{position:fixed;top:34px;right:10px;width:330px;background:rgba(250,251,253,.97);
+backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);
+border:.5px solid var(--bd2);border-radius:12px;box-shadow:0 18px 50px rgba(20,28,45,.26),0 2px 8px rgba(20,28,45,.1);
+z-index:200;padding:13px;display:none}
+.menu-pop.show{display:block;animation:popIn .16s ease-out}
+@keyframes popIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+.pop-head{display:flex;align-items:center;justify-content:space-between;padding:2px 3px 11px}
+.pop-head b{font-size:12.5px}
+.pop-head span{font-size:10px;color:var(--green);background:var(--green-s);padding:2px 7px;border-radius:10px}
+.pop-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:11px}
+.pop-stat{background:#fff;border:.5px solid var(--bd);border-radius:8px;padding:8px 5px;text-align:center}
+.pop-stat .l{font-size:9.5px;color:var(--t2)}
+.pop-stat .v{font-size:13px;font-weight:650;margin-top:3px}
+.pop-stat .v small{font-size:9px;color:var(--t2);font-weight:400}
+.pop-hint{display:flex;align-items:center;gap:9px;background:var(--blue-s);border:.5px solid #d4e6ff;
+border-radius:9px;padding:10px 11px;margin-bottom:10px}
+.pop-hint svg{width:17px;height:17px;color:var(--blue);flex:0 0 17px}
+.pop-hint b{font-size:11.5px;display:block}
+.pop-hint span{font-size:10px;color:#4d6684}
+.pop-hint button{margin-left:auto;font-size:10px;font-weight:600;color:var(--blue);white-space:nowrap}
+.pop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:10px}
+.pop-act{display:flex;align-items:center;gap:8px;background:#fff;border:.5px solid var(--bd);border-radius:8px;padding:10px;text-align:left}
+.pop-act:hover{background:var(--blue-s)}
+.pop-act i{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:0 0 26px}
+.pop-act i svg{width:14px;height:14px}
+.pop-act b{font-size:11px;font-weight:600;display:block}
+.pop-act span{font-size:9.5px;color:var(--t2)}
+.pop-dev{background:#fff;border:.5px solid var(--bd);border-radius:8px;padding:8px 10px;margin-bottom:10px}
+.pop-dev .t{font-size:10px;color:var(--t2);margin-bottom:5px}
+.pop-dev .rows{display:flex;gap:12px;flex-wrap:wrap;font-size:10.5px}
+.pop-dev .rows span{display:flex;align-items:center;gap:4px}
+.pop-dev .rows i{width:6px;height:6px;border-radius:50%}
+.pop-foot{display:flex;gap:6px}
+.pop-foot button{flex:1;padding:7px;border-radius:7px;font-size:10.5px;font-weight:600;background:var(--inset)}
+.pop-foot button:hover{background:#e4e7ec}
+.pop-foot button.main{background:var(--blue);color:#fff}
+
+/* 窗口 */
+.window{width:min(1200px,100%);height:min(770px,calc(100vh - 92px));background:var(--win);
+border-radius:13px;box-shadow:0 22px 70px rgba(20,28,45,.28),0 2px 8px rgba(20,28,45,.12);
+overflow:hidden;display:flex;flex-direction:column;border:.5px solid rgba(0,0,0,.16)}
+.titlebar{height:42px;flex:0 0 42px;background:linear-gradient(#f7f8fa,#eff1f5);border-bottom:.5px solid var(--bd);
+display:flex;align-items:center;padding:0 15px;gap:8px;position:relative}
+.traffic{width:12px;height:12px;border-radius:50%}.traffic.red{background:#ff5f57}
+.traffic.yellow{background:#febc2e}.traffic.green{background:#28c840}
+.title-label{position:absolute;left:0;right:0;text-align:center;font-size:13px;font-weight:600;color:#4a4d52;pointer-events:none}
+.win-body{flex:1;display:flex;min-height:0}
+.sidebar{width:206px;flex:0 0 206px;background:var(--side);border-right:.5px solid var(--bd);
+display:flex;flex-direction:column;padding:13px 10px;overflow-y:auto}
+.side-label{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.06em;padding:11px 10px 5px}
+.nav{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;font-size:12.5px;font-weight:500;
+color:#3c3f44;width:100%;text-align:left}
+.nav:hover{background:rgba(0,0,0,.045)}.nav.active{background:var(--blue);color:#fff}
+.nav svg{width:17px;height:17px;flex:0 0 17px;color:#5c6068}.nav.active svg{color:#fff}
+.nav .badge{margin-left:auto;font-size:9.5px;font-weight:600;background:var(--red);color:#fff;padding:1px 6px;border-radius:9px}
+.nav.active .badge{background:rgba(255,255,255,.28)}
+.nav .new{margin-left:auto;font-size:9px;color:var(--blue);background:var(--blue-s);padding:1px 5px;border-radius:6px}
+.nav.active .new{background:rgba(255,255,255,.25);color:#fff}
+.spacer{flex:1;min-height:16px}
+.local{margin:0 4px 4px;padding:9px;border-radius:9px;background:rgba(255,255,255,.62);
+border:.5px solid var(--bd);font-size:10.5px;color:var(--t2);line-height:1.55}
+.local b{color:var(--green)}
+.content{flex:1;min-width:0;overflow-y:auto;background:var(--win)}
+.module{display:none;padding:23px 28px 38px}.module.active{display:block}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}
+h1{font-size:22px;font-weight:650;letter-spacing:-.02em}
+.sub{font-size:12px;color:var(--t2);margin-top:5px;line-height:1.5}
+.btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn svg{width:13px;height:13px}
+.btn.pri{background:var(--blue);color:#fff}.btn.pri:hover{background:#0069e0}.btn.pri:disabled{background:#b9c6d6;cursor:not-allowed}
+.btn.gho{background:var(--card);border:.5px solid var(--bd2)}.btn.gho:hover{background:var(--hover)}
+.btn.dan{background:var(--red);color:#fff}.btn.sm{padding:5px 10px;font-size:11px}
+.card{background:var(--card);border:.5px solid var(--bd);border-radius:var(--r);box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.sec{margin:20px 0 10px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.sec em{font-size:10.5px;color:var(--t3);font-weight:400;font-style:normal}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.tag.safe{color:var(--green);background:var(--green-s)}.tag.review{color:var(--orange);background:var(--orange-s)}
+.tag.protected{color:var(--red);background:var(--red-s)}.tag.unknown{color:var(--gray);background:var(--gray-s)}
+.muted{color:var(--t2)}.tiny{font-size:10.5px}
+.divider{height:.5px;background:var(--bd);margin:15px 0}
+
+/* 中文标识核心样式 */
+.human{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.human .cn{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.human .say{font-size:11px;color:var(--t2);line-height:1.5}
+.raw{font-size:10px;color:var(--t3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+margin-top:3px;display:none;word-break:break-all}
+body.show-raw .raw{display:block}
+.raw-toggle{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t2);cursor:pointer}
+.raw-toggle .sw{width:30px;height:18px;border-radius:10px;background:#cfd3da;position:relative;transition:.18s;flex:0 0 30px}
+.raw-toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.18s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+body.show-raw .raw-toggle .sw{background:var(--blue)}
+body.show-raw .raw-toggle .sw::after{transform:translateX(12px)}
+.explain-card{display:flex;gap:10px;background:linear-gradient(90deg,#f0f7ff,#f8fbff);border:.5px solid #d8e9ff;
+border-radius:10px;padding:11px 13px;margin-bottom:14px;font-size:11px;line-height:1.6;color:#33465f}
+.explain-card svg{width:16px;height:16px;color:var(--blue);flex:0 0 16px;margin-top:1px}
+.explain-card b{color:var(--blue)}
+
+/* 概览 */
+.hgrid{display:grid;grid-template-columns:1.35fr 1fr;gap:15px}
+.hero{padding:20px 22px;display:flex;align-items:center;gap:22px}
+.ring{width:100px;height:100px;flex:0 0 100px;position:relative}
+.ring svg{transform:rotate(-90deg)}.ring .bg{fill:none;stroke:#e9ecf1;stroke-width:9}
+.ring .fg{fill:none;stroke:var(--green);stroke-width:9;stroke-linecap:round;stroke-dasharray:282.7;stroke-dashoffset:22}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:26px;font-weight:650;line-height:1}.ring .num span{font-size:10px;color:var(--t2);margin-top:3px}
+.hero-info h3{font-size:16px;font-weight:600}.hero-info p{font-size:11.5px;color:var(--t2);line-height:1.6;margin-top:5px}
+.hero-acts{display:flex;gap:8px;margin-top:12px}
+.stats2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.stat{padding:14px 15px}.stat .l{font-size:10.5px;color:var(--t2)}
+.stat .v{font-size:21px;font-weight:650;margin-top:6px}.stat .v small{font-size:11px;color:var(--t2);font-weight:400}
+.bar{height:6px;border-radius:4px;background:#e9ecf1;overflow:hidden;display:flex;margin-top:9px}
+.bar i{height:100%;display:block}.stat .foot{font-size:10px;color:var(--t3);margin-top:6px}
+.quick4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.quick{display:flex;align-items:center;gap:10px;padding:13px;text-align:left;width:100%}
+.quick:hover{background:var(--hover)}
+.qi{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 32px}
+.qi svg{width:17px;height:17px}.qi.b{background:var(--blue-s);color:var(--blue)}.qi.g{background:var(--green-s);color:var(--green)}
+.qi.o{background:var(--orange-s);color:var(--orange)}.qi.p{background:var(--purple-s);color:var(--purple)}
+.quick b{display:block;font-size:12px}.quick span{display:block;font-size:10px;color:var(--t2);margin-top:2px}
+.act{padding:5px 15px}.act-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:.5px solid var(--bd);font-size:11.5px}
+.act-row:last-child{border:none}.act-dot{width:7px;height:7px;border-radius:50%;flex:0 0 7px}
+.act-time{margin-left:auto;color:var(--t3);font-size:10px}
+
+/* 清理 */
+.clean-sum{padding:15px 18px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.big{font-size:28px;font-weight:680;letter-spacing:-.03em;color:var(--blue)}
+.big small{font-size:13px;font-weight:500;color:var(--t2)}
+.sep{width:1px;height:28px;background:var(--bd)}
+.meta{font-size:11px;color:var(--t2);line-height:1.6}.meta b{color:var(--t1)}
+.prog{height:4px;border-radius:3px;background:#e9ecf1;overflow:hidden;margin-top:11px;display:none}
+.prog.on{display:block}.prog i{display:block;height:100%;width:0;background:var(--blue);transition:width .25s}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{border:.5px solid var(--bd);border-radius:10px;background:var(--card);overflow:hidden}
+.item:hover{box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.item-main{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+.cb{width:17px;height:17px;border-radius:5px;border:1.5px solid #c3c7cf;flex:0 0 17px;display:flex;align-items:center;justify-content:center;background:#fff}
+.cb.checked{background:var(--blue);border-color:var(--blue)}
+.cb.checked::after{content:"";width:8px;height:4.5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.cb.locked{background:var(--red-s);border-color:#e8b9b6;cursor:not-allowed}
+.cb.locked::after{content:"";width:8px;height:1.5px;background:var(--red);transform:rotate(-45deg)}
+.ii{width:31px;height:31px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 31px;background:var(--inset);color:#5c6068}
+.ii svg{width:16px;height:16px}
+.size{font-size:12.5px;font-weight:600;white-space:nowrap;width:66px;text-align:right}
+.chev{width:14px;height:14px;color:var(--t3);transition:transform .18s}
+.item.open .chev{transform:rotate(90deg)}
+.detail{display:none;padding:0 14px 13px 58px}.item.open .detail{display:block}
+.reason{font-size:11px;color:var(--t2);line-height:1.6;margin-bottom:9px}
+.files{background:var(--inset);border-radius:8px;padding:3px 11px;margin-bottom:9px}
+.file{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:.5px solid var(--bd);font-size:10.5px}
+.file:last-child{border:none}
+.ai{display:flex;gap:9px;background:linear-gradient(90deg,#f0f6ff,#f7faff);border:.5px solid #d9e8ff;
+border-radius:8px;padding:9px 11px;font-size:10.5px;line-height:1.6;color:#33465f}
+.ai svg{width:14px;height:14px;color:var(--blue);flex:0 0 14px;margin-top:1px}
+.ai b{color:var(--blue)}
+.protect-note{display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--t2);
+background:var(--red-s);border-radius:8px;padding:9px 12px;margin-top:11px}
+.protect-note svg{width:14px;height:14px;color:var(--red);flex:0 0 14px}
+.clean-foot{position:sticky;bottom:0;margin:17px -28px -38px;padding:12px 28px;background:rgba(246,247,249,.94);
+backdrop-filter:blur(12px);border-top:.5px solid var(--bd);display:flex;align-items:center;gap:12px}
+.clean-foot .spacer{flex:1}.clean-foot .sel{font-size:11.5px;color:var(--t2)}
+.clean-foot .sel b{color:var(--t1)}
+
+/* 树图 */
+.awrap{display:grid;grid-template-columns:1.6fr .95fr;gap:15px}
+.tm-card{padding:15px}.tm-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.crumb{font-size:11px;color:var(--t2)}.crumb b{color:var(--t1)}
+.tm{position:relative;width:100%;height:400px;border-radius:9px;overflow:hidden;background:#e9ecf1}
+.cell{position:absolute;border:1.5px solid #fff;display:flex;flex-direction:column;justify-content:flex-end;padding:9px;cursor:pointer;transition:filter .15s}
+.cell:hover{filter:brightness(.94);z-index:2}
+.cell .n{font-size:11.5px;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.cell .s{font-size:9.5px;color:rgba(255,255,255,.86);margin-top:2px}
+.cell .dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.4)}
+.legend{display:flex;gap:14px;margin-top:11px;font-size:10px;color:var(--t2)}
+.legend span{display:flex;align-items:center;gap:5px}.legend i{width:8px;height:8px;border-radius:50%}
+.side{padding:15px}.side h4{font-size:12.5px;font-weight:600}.side .sub{font-size:10.5px;color:var(--t2);margin-bottom:10px}
+.bf{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:.5px solid var(--bd)}
+.bf:last-child{border:none}
+.bfi{width:27px;height:27px;border-radius:7px;background:var(--inset);display:flex;align-items:center;justify-content:center;flex:0 0 27px;color:#6b6f76}
+.bfi svg{width:13px;height:13px}.bfi-c{flex:1;min-width:0}.bfi-c b{display:block;font-size:11px;font-weight:500}
+.bfi-c span{font-size:9.5px;color:var(--t3)}.bfs{font-size:11px;font-weight:600}
+
+/* 内存 */
+.mtop{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.gauge{padding:18px;display:flex;align-items:center;gap:20px}
+.gauge .ring{width:112px;height:112px;flex:0 0 112px}
+.gauge .ring .bg{stroke-width:8}.gauge .ring .fg{stroke-width:8;stroke:var(--orange);stroke-dasharray:314.2;stroke-dashoffset:88}
+.gauge h3{font-size:15px;font-weight:600}.gauge p{font-size:11px;color:var(--t2);line-height:1.65;margin-top:5px}
+.m3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:14px}
+.metric{padding:12px 13px}.metric .l{font-size:10px;color:var(--t2)}.metric .v{font-size:18px;font-weight:650;margin-top:5px}
+.metric .v small{font-size:10px;color:var(--t2);font-weight:400}
+.chart{padding:15px;margin-top:15px}.chart h4{font-size:12px;font-weight:600}
+.chart .sub{font-size:10px;color:var(--t3);margin-bottom:9px}
+.proc{padding:4px 15px;margin-top:15px}
+.prow,.phead{display:grid;grid-template-columns:1.7fr .8fr .7fr .7fr;gap:9px;padding:9px 0;font-size:11px;align-items:center}
+.phead{font-size:10px;color:var(--t3);border-bottom:.5px solid var(--bd)}
+.prow{border-bottom:.5px solid var(--bd)}.prow:last-child{border:none}
+.pname{display:flex;align-items:center;gap:8px;font-weight:500;min-width:0}
+.pname i{width:8px;height:8px;border-radius:3px;flex:0 0 8px}
+.pname span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trend{font-size:10px;font-weight:600}.trend.up{color:var(--red)}.trend.down{color:var(--green)}.trend.flat{color:var(--t3)}
+
+/* 电池 */
+.batt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.batt-hero{padding:20px 22px;display:flex;align-items:center;gap:22px}
+.batt-ring{width:120px;height:120px;flex:0 0 120px;position:relative}
+.batt-ring svg{transform:rotate(-90deg)}
+.batt-ring .bg{fill:none;stroke:#e9ecf1;stroke-width:10}
+.batt-ring .fg{fill:none;stroke:var(--green);stroke-width:10;stroke-linecap:round;stroke-dasharray:326.7;stroke-dashoffset:26}
+.batt-ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.batt-ring .num b{font-size:28px;font-weight:650;line-height:1}
+.batt-ring .num span{font-size:10px;color:var(--t2);margin-top:3px}
+.batt-info h3{font-size:16px;font-weight:600}.batt-info p{font-size:11px;color:var(--t2);line-height:1.7;margin-top:6px}
+.batt-kv{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 18px;margin-top:15px}
+.kv .l{font-size:10px;color:var(--t2)}.kv .v{font-size:18px;font-weight:650;margin-top:5px}
+.kv .v small{font-size:10px;color:var(--t2);font-weight:400}
+.cap-bar{height:9px;border-radius:5px;background:#e9ecf1;overflow:hidden;margin-top:8px}
+.cap-bar i{height:100%;background:linear-gradient(90deg,#34b57a,#1f9d68);display:block}
+.charge-tip{display:flex;gap:10px;background:var(--green-s);border:.5px solid #c9e9d8;border-radius:9px;
+padding:11px 13px;margin-top:15px;font-size:11px;line-height:1.6;color:#245c43}
+.charge-tip svg{width:16px;height:16px;color:var(--green);flex:0 0 16px}
+.drain{padding:5px 16px;margin-top:15px}.drow{display:grid;grid-template-columns:1.5fr 1fr .7fr;gap:10px;padding:10px 0;border-bottom:.5px solid var(--bd);font-size:11.5px;align-items:center}
+.drow:last-child{border:none}.drow .dn{display:flex;align-items:center;gap:8px;font-weight:500}
+.drow .dn i{width:8px;height:8px;border-radius:3px}
+
+/* 蓝牙 */
+.bt-list{display:flex;flex-direction:column;gap:9px}
+.bt{padding:13px 15px;display:flex;align-items:center;gap:13px}
+.bt-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:0 0 40px;background:var(--blue-s);color:var(--blue)}
+.bt-ico svg{width:20px;height:20px}
+.bt-info{flex:1;min-width:0}
+.bt-info .n{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
+.bt-info .say{font-size:10.5px;color:var(--t2);margin-top:3px}
+.bt-info .raw{font-size:9.5px}
+.batt-pill{display:flex;align-items:center;gap:6px;min-width:90px}
+.batt-pill .shell{width:30px;height:14px;border:1.5px solid #b9bec7;border-radius:4px;position:relative;padding:1.5px}
+.batt-pill .shell::after{content:"";position:absolute;right:-4px;top:3.5px;width:2.5px;height:5px;background:#b9bec7;border-radius:0 2px 2px 0}
+.batt-pill .shell i{display:block;height:100%;border-radius:2px;background:var(--green)}
+.batt-pill .shell i.low{background:var(--orange)}.batt-pill .shell i.crit{background:var(--red)}
+.batt-pill b{font-size:11.5px;font-weight:600}
+.bt-state{font-size:10px;font-weight:600;padding:3px 9px;border-radius:12px;white-space:nowrap}
+.bt-state.on{color:var(--green);background:var(--green-s)}.bt-state.off{color:var(--t3);background:var(--gray-s)}
+.bt-state.near{color:var(--blue);background:var(--blue-s)}
+.bt-tip{display:flex;gap:10px;background:var(--orange-s);border:.5px solid #f2dcae;border-radius:9px;
+padding:11px 13px;margin-top:14px;font-size:11px;line-height:1.6;color:#7a5c22}
+.bt-tip svg{width:16px;height:16px;color:var(--orange);flex:0 0 16px}
+
+/* 卸载/优化/设置 */
+.uwrap{display:grid;grid-template-columns:1.15fr .85fr;gap:15px}
+.applist{padding:4px 13px}.app{display:flex;align-items:center;gap:10px;padding:9px 3px;border-bottom:.5px solid var(--bd);cursor:pointer}
+.app:last-child{border:none}.app:hover{background:var(--hover)}.app.sel{background:var(--blue-s)}
+.ai-co{width:33px;height:33px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;flex:0 0 33px}
+.app-meta{flex:1;min-width:0}.app-meta b{font-size:12px;font-weight:600}.app-meta .say{display:block;font-size:10px;color:var(--t2);margin-top:2px}
+.app-size{font-size:11px;font-weight:600}
+.adetail{padding:16px}.adh{display:flex;gap:11px;align-items:center;margin-bottom:14px}
+.adh .ai-co{width:42px;height:42px;flex:0 0 42px;font-size:18px}.adh h3{font-size:15px;font-weight:600}
+.adh .say{font-size:10.5px;color:var(--t2);margin-top:3px}
+.lt-total{font-size:11px;color:var(--t2);margin-bottom:9px}.lt-total b{font-size:16px;color:var(--t1)}
+.ltf{display:flex;justify-content:space-between;gap:9px;padding:7px 0;border-bottom:.5px solid var(--bd);font-size:10.5px}
+.ltf:last-child{border:none}.ltf .cn{font-weight:500}.ltf .raw{display:block}
+.adacts{margin-top:14px;display:flex;gap:8px}
+.opt{padding:13px 15px;display:flex;align-items:center;gap:13px;border-bottom:.5px solid var(--bd)}
+.opt:last-child{border:none}.opt-info{flex:1;min-width:0}
+.opt-info b{font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.opt-info p{font-size:10.5px;color:var(--t2);margin-top:4px;line-height:1.5}
+.switch{width:35px;height:20px;border-radius:11px;background:#cfd3da;position:relative;flex:0 0 35px;transition:.18s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.18s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch.on{background:var(--blue)}.switch.on::after{transform:translateX(15px)}
+.seg{display:flex;border:1px solid var(--bd2);border-radius:8px;overflow:hidden;flex:0 0 auto}
+.seg button{border:0;background:transparent;color:var(--t2);font-size:11px;padding:6px 9px;cursor:pointer}
+.seg button.on{background:var(--blue);color:#fff}
+.optfoot{padding:13px 15px;display:flex;align-items:center;gap:11px;background:var(--inset)}
+.optfoot .spacer{flex:1}
+.setgroup{padding:4px 17px}
+.setrow{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:.5px solid var(--bd)}
+.setrow:last-child{border:none}.setinfo{flex:1;min-width:0}
+.setinfo b{font-size:12px;font-weight:600;display:block}
+.setinfo p{font-size:10.5px;color:var(--t2);margin-top:3px;line-height:1.5}
+.dict{padding:14px 16px}.dict table{width:100%;border-collapse:collapse;font-size:11px}
+.dict td{padding:8px 6px;border-bottom:.5px solid var(--bd)}
+.dict td:first-child{font-family:ui-monospace,Menlo,monospace;color:var(--t2);width:42%}
+.dict td:nth-child(2){font-weight:600;width:23%}.dict td:last-child{color:var(--t2)}
+.dict tr:last-child td{border:none}
+.protect{padding:13px 15px;font-size:11px;line-height:2}
+.protect code{font-family:ui-monospace,Menlo,monospace;background:var(--inset);padding:2px 6px;border-radius:4px;color:#444;display:inline-block;margin:2px 4px 2px 0}
+@media(max-width:960px){.hgrid,.mtop,.batt-grid,.awrap,.uwrap{grid-template-columns:1fr}
+.quick4,.hud4{grid-template-columns:1fr 1fr}.sidebar{width:172px;flex-basis:172px}}
+</style>
+</head>
+<body>
+
+<!-- 顶部菜单栏 -->
+<div class="menubar">
+  <div class="menu-left">
+    <svg class="apple" viewBox="0 0 24 24" fill="#2b2b2e"><path d="M17.05 12.54c.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.63-1.71-3.2-1.73-1.36-.14-2.66.8-3.35.8-.69 0-1.76-.78-2.9-.76-1.49.02-2.87.87-3.64 2.2-1.55 2.69-.4 6.67 1.11 8.85.74 1.07 1.62 2.27 2.77 2.23 1.11-.04 1.53-.72 2.87-.72 1.34 0 1.72.72 2.9.7 1.2-.02 1.96-1.09 2.69-2.17.85-1.24 1.2-2.45 1.22-2.51-.03-.01-2.34-.9-2.36-3.58zM14.9 5.9c.61-.74 1.02-1.77.91-2.8-.88.04-1.95.59-2.58 1.32-.57.66-1.07 1.71-.94 2.72.98.08 1.99-.5 2.61-1.24z"/></svg>
+    <span class="menu-item strong">SnowSweep</span><span class="menu-item">文件</span><span class="menu-item">编辑</span><span class="menu-item">显示</span>
+  </div>
+  <div class="menu-right">
+    <button class="snow-btn" id="snowBtn" title="点开快速面板">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20M4 6l16 12M20 6L4 18M9 4l3 3 3-3M9 20l3-3 3 3"/></svg>
+      <span>42.6 GB</span>
+    </button>
+    <span class="status-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 10v4M11 10v4"/></svg></span>
+    <span class="status-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/></svg>87%</span>
+    <span class="status-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0"/></svg></span>
+    <span class="status-item">周一 18:01</span><span class="mini-dot"></span>
+  </div>
+</div>
+
+<!-- 菜单栏下拉快速面板 -->
+<div class="menu-pop" id="menuPop">
+  <div class="pop-head"><b>SnowSweep 快速面板</b><span>本地运行</span></div>
+  <div class="pop-stats">
+    <div class="pop-stat"><div class="l">可释放</div><div class="v">42.6<small> GB</small></div></div>
+    <div class="pop-stat"><div class="l">内存</div><div class="v">9.1<small>/18</small></div></div>
+    <div class="pop-stat"><div class="l">电池</div><div class="v">87<small>%</small></div></div>
+    <div class="pop-stat"><div class="l">温度</div><div class="v">46<small>°</small></div></div>
+  </div>
+  <div class="pop-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    <div><b>发现 42.6 GB 可安全释放</b><span>4 项安全 · 6 项需你确认</span></div>
+    <button data-goto="clean">去处理 ›</button>
+  </div>
+  <div class="pop-grid">
+    <button class="pop-act" data-goto="clean"><i style="background:#e5f5ed;color:#1f9d68"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M6 7l1 13h10l1-13"/></svg></i><span><b>快速清理</b><span>安全项一键预览</span></span></button>
+    <button class="pop-act" data-goto="memory"><i style="background:#f0eafd;color:#8b5cf6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h3l2-6 3 12 3-9 2 3h5"/></svg></i><span><b>内存分析</b><span>看看谁占内存</span></span></button>
+    <button class="pop-act" data-goto="battery"><i style="background:#e6f1ff;color:#0a7cff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/></svg></i><span><b>电池健康</b><span>循环 187 次</span></span></button>
+    <button class="pop-act" data-goto="bluetooth"><i style="background:#fdf0d9;color:#da8500"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></svg></i><span><b>我的外设</b><span>3 个已连接</span></span></button>
+  </div>
+  <div class="pop-dev"><div class="t">附近设备电量</div><div class="rows">
+    <span><i style="background:#1f9d68"></i>AirPods 78%</span><span><i style="background:#da8500"></i>鼠标 42%</span><span><i style="background:#1f9d68"></i>键盘 100%</span>
+  </div></div>
+  <div class="pop-foot"><button data-goto="status">状态总览</button><button data-goto="settings">设置</button><button class="main" data-goto="dashboard">打开主界面</button></div>
+</div>
+
+<!-- 窗口 -->
+<div class="window">
+  <div class="titlebar"><div class="traffic red"></div><div class="traffic yellow"></div><div class="traffic green"></div><div class="title-label">SnowSweep · 看得懂版</div></div>
+  <div class="win-body">
+    <aside class="sidebar">
+      <div class="side-label">工作台</div>
+      <button class="nav active" data-module="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>概览</button>
+      <button class="nav" data-module="clean"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>清理<span class="badge" id="navBadge">8</span></button>
+      <button class="nav" data-module="analyze"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="5"/><rect x="13" y="10" width="8" height="11"/><rect x="3" y="13" width="8" height="8"/></svg>空间分析</button>
+      <button class="nav" data-module="memory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 10v4M11 10v4"/></svg>内存</button>
+      <div class="side-label">设备状态</div>
+      <button class="nav" data-module="battery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/></svg>电池健康<span class="new">新</span></button>
+      <button class="nav" data-module="bluetooth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></svg>蓝牙外设<span class="new">新</span></button>
+      <button class="nav" data-module="status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h3l2-6 3 12 3-9 2 3h5"/></svg>机身状态</button>
+      <div class="side-label">管理</div>
+      <button class="nav" data-module="uninstall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>卸载</button>
+      <button class="nav" data-module="optimize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>优化</button>
+      <div class="spacer"></div>
+      <button class="nav" data-module="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.6V21h-4v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.6-1H3v-4h.1a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 001.9.3 1.7 1.7 0 001-1.6V3h4v.1a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 00-.3 1.9 1.7 1.7 0 001.6 1H21v4h-.1a1.7 1.7 0 00-1.6 1z"/></svg>设置</button>
+      <div class="local"><b>● 完全本地运行</b><br>看不懂的英文都翻成中文<br>零网络 · 零遥测</div>
+    </aside>
+
+    <main class="content" id="content">
+
+      <!-- 概览 -->
+      <section class="module active" data-module="dashboard">
+        <div class="page-head"><div><h1>概览</h1><div class="sub">所有项目都用中文告诉你是什么、能不能删。看不懂的英文已翻译成人话。</div></div>
+          <button class="btn pri" id="dashScan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>立即体检</button></div>
+        <div class="explain-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg>
+          <div><b>这一版的新规则：</b>你看到的每一项都是「中文名字 + 一句话解释」。英文路径默认收起，想看时点右上角开关展开。比如 <b>DerivedData</b> 现在叫「编译缓存」，并告诉你「删了下次编译慢一点，不影响项目」。</div></div>
+        <div class="hgrid">
+          <div class="card hero"><div class="ring"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="45"/><circle class="fg" cx="50" cy="50" r="45"/></svg><div class="num"><b>92</b><span>健康评分</span></div></div>
+            <div class="hero-info"><h3>状态良好</h3><p>磁盘空间充足，内存压力正常。<br>发现 <b>42.6 GB</b> 可安全释放，主要是编译缓存和应用缓存。</p>
+            <div class="hero-acts"><button class="btn pri sm" data-goto="clean">看清理建议</button><button class="btn gho sm" data-goto="battery">电池健康</button></div></div></div>
+          <div class="stats2">
+            <div class="card stat"><div class="l">磁盘可用</div><div class="v">313<small> GB</small></div><div class="bar"><i style="width:44%;background:#0a7cff"></i><i style="width:26%;background:#a9c7ef"></i></div><div class="foot">共 1 TB</div></div>
+            <div class="card stat"><div class="l">内存压力</div><div class="v" style="color:var(--green)">正常</div><div class="bar"><i style="width:38%;background:var(--green)"></i></div><div class="foot">9.1 / 18 GB</div></div>
+            <div class="card stat"><div class="l">电池健康</div><div class="v">92<small>%</small></div><div class="bar"><i style="width:92%;background:var(--green)"></i></div><div class="foot">循环 187 次</div></div>
+            <div class="card stat"><div class="l">连接中的外设</div><div class="v">3<small> 个</small></div><div class="bar"><i style="width:60%;background:var(--purple)"></i></div><div class="foot">1 个电量偏低</div></div>
+          </div>
+        </div>
+        <div class="sec">快捷入口</div>
+        <div class="quick4">
+          <button class="card quick" data-goto="clean"><span class="qi g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M6 7l1 13h10l1-13"/></svg></span><span><b>清理垃圾</b><span>42.6 GB 可释放</span></span></button>
+          <button class="card quick" data-goto="battery"><span class="qi b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/></svg></span><span><b>电池健康</b><span>容量与循环次数</span></span></button>
+          <button class="card quick" data-goto="bluetooth"><span class="qi o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></svg></span><span><b>我的外设</b><span>鼠标键盘耳机</span></span></button>
+          <button class="card quick" data-goto="settings"><span class="qi p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M3 12h3"/></svg></span><span><b>中文标识</b><span>看不懂的来这里查</span></span></button>
+        </div>
+        <div class="sec">最近做了什么 <em>每次操作都有本地记录，可追溯</em></div>
+        <div class="card act">
+          <div class="act-row"><i class="act-dot" style="background:var(--green)"></i><span>清理完成 · 应用缓存与系统日志</span><span class="muted">释放 6.2 GB</span><span class="act-time">今天 17:30</span></div>
+          <div class="act-row"><i class="act-dot" style="background:var(--blue)"></i><span>全盘扫描完成 · 扫描完整</span><span class="muted">1.02 TB 已检查</span><span class="act-time">今天 17:28</span></div>
+          <div class="act-row"><i class="act-dot" style="background:var(--orange)"></i><span>电池健康记录 · 容量 92%</span><span class="muted">循环 187 次</span><span class="act-time">今天 08:12</span></div>
+        </div>
+      </section>
+
+      <!-- 清理 -->
+      <section class="module" data-module="clean">
+        <div class="page-head"><div><h1>清理</h1><div class="sub">每一项都有中文名和一句话解释。黄色项目默认不勾选，由你决定。</div></div>
+          <div style="display:flex;align-items:center;gap:9px">
+            <label class="raw-toggle" id="rawToggle"><span class="sw"></span>显示英文原名</label>
+            <button class="btn gho sm" id="expandAll">展开全部</button><button class="btn pri" id="cleanScan">重新扫描</button></div></div>
+        <div class="card clean-sum">
+          <div><div class="big" id="cleanTotal">计算中…</div><div class="tiny muted" style="margin-top:2px">共发现可清理空间（不含受保护项）</div></div>
+          <div class="sep"></div>
+          <div class="meta"><span id="protectCount">规则库保护路径 20 条 · 本次命中 2 项</span> · <span id="confirmCount">需你确认 6 项</span><br>扫描完整 · 上次 今天 17:28</div>
+          <div class="meta" style="margin-left:auto;text-align:right">规则库 v0.2.0<br>中文标识已启用</div>
+          <div class="prog" id="prog"><i></i></div></div>
+        <div class="sec">扫描结果 <em>点开看它是怎么来的 · 黄色项默认不选</em></div>
+        <div class="list" id="cleanList"></div>
+        <div class="protect-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg>
+          整根保护的 20 条路径永不清理：本地 AI 工具（含私钥与配置）、手机备份与 iCloud 本地文件、密码钥匙串、系统关键路径、Homebrew、应用程序与外接卷。</div>
+        <div class="clean-foot"><div class="sel">已选 <b id="selN">—</b> 项 · 预计释放 <b id="selS">—</b></div><div class="spacer"></div>
+          <button class="btn gho sm" id="selSafe">全选安全项</button><button class="btn pri" id="doTrash">移到废纸篓</button></div>
+      </section>
+
+      <!-- 空间分析 -->
+      <section class="module" data-module="analyze">
+        <div class="page-head"><div><h1>空间分析</h1><div class="sub">方块越大占用越多。点方块进去看细节，颜色代表能不能删。</div></div>
+          <button class="btn gho sm" id="export">导出报告</button></div>
+        <div class="awrap">
+          <div class="card tm-card">
+            <div class="tm-head"><div class="crumb" id="crumb"><b>Macintosh HD</b> › 全盘</div><button class="btn gho sm" id="tmBack" style="display:none">返回</button></div>
+            <div class="tm" id="tm"></div>
+            <div class="legend"><span><i style="background:var(--green)"></i>可安全清理</span><span><i style="background:var(--orange)"></i>需你确认</span><span><i style="background:var(--red)"></i>受保护</span><span><i style="background:rgba(255,255,255,.5);border:1px solid #ccc"></i>你的正常文件</span></div></div>
+          <div><div class="card side"><h4>最大的文件</h4><div class="sub">按体积排序</div><div id="bigFiles"></div></div>
+            <div class="card side" style="margin-top:15px"><h4>磁盘占用分解</h4><div class="sub">系统数据那块灰色，其实是这样来的</div>
+              <div id="diskDecomp"></div></div></div>
+        </div>
+      </section>
+
+      <!-- 内存 -->
+      <section class="module" data-module="memory">
+        <div class="page-head"><div><h1>内存</h1><div class="sub">看看是谁占了内存。进程名也翻成了中文，比如 WindowServer 叫「系统窗口服务」。</div></div>
+          <button class="btn gho sm" id="memRefresh">刷新</button></div>
+        <div class="mtop">
+          <div class="card gauge"><div class="ring"><svg viewBox="0 0 112 112"><circle class="bg" cx="56" cy="56" r="50"/><circle class="fg" cx="56" cy="56" r="50"/></svg><div class="num"><b>9.1<small style="font-size:11px"> GB</small></b><span>已用 / 18 GB</span></div></div>
+            <div><h3>内存压力正常</h3><p>物理内存 18 GB<br>没有使用交换空间<br>占用最多：Xcode、谷歌浏览器</p></div></div>
+          <div class="card m3" style="align-content:start">
+            <div class="card metric"><div class="l">正在使用</div><div class="v">9.1 <small>GB</small></div></div>
+            <div class="card metric"><div class="l">压缩内存</div><div class="v">1.4 <small>GB</small></div></div>
+            <div class="card metric"><div class="l">交换空间</div><div class="v">0 <small>KB</small></div></div></div>
+        </div>
+        <div class="card chart" style="margin-top:15px"><h4>最近 60 秒内存压力</h4><div class="sub">绿色是健康范围，黄色表示压力上升</div><svg id="memChart" viewBox="0 0 600 130" preserveAspectRatio="none" style="width:100%;height:126px"></svg></div>
+        <div class="card proc" style="padding-top:5px"><div class="phead"><span>程序（中文名）</span><span>占用</span><span>CPU</span><span>变化</span></div><div id="procList"></div></div>
+      </section>
+
+      <!-- 电池健康 -->
+      <section class="module" data-module="battery">
+        <div class="page-head"><div><h1>电池健康</h1><div class="sub">不用去「系统信息」里按 Option 找了，这里直接给你看容量、循环次数和温度。</div></div>
+          <span class="tiny muted" style="align-self:center">数据来自本机 · 不上传</span></div>
+        <div class="batt-grid">
+          <div class="card batt-hero">
+            <div class="batt-ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" cx="60" cy="60" r="52"/></svg><div class="num"><b>92%</b><span>电池健康度</span></div></div>
+            <div class="batt-info"><h3>状态良好</h3><p>当前满电容量 <b>8679 mAh</b><br>出厂设计容量 9440 mAh<br>相当于用了不到一年，损耗很小。  </p></div></div>
+          <div class="card" style="padding:16px 18px">
+            <div class="kv" style="grid-template-columns:1fr 1fr;margin:0;padding:0">
+              <div><div class="l">循环次数</div><div class="v">187 <small>/ 1000 次</small></div></div>
+              <div><div class="l">当前电量</div><div class="v">87 <small>%</small></div></div>
+              <div><div class="l">电池温度</div><div class="v">32 <small>°C 正常</small></div></div>
+              <div><div class="l">充电状态</div><div class="v" style="font-size:15px">未充电</div></div>
+            </div>
+            <div class="cap-bar"><i style="width:92%"></i></div>
+            <div class="tiny muted" style="margin-top:6px">剩余容量 92% · 设计容量 100%</div></div>
+        </div>
+        <div class="card charge-tip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg>
+          <div><b>建议：开启「优化充电」</b><br>长期插电时系统会限制充到 80%，能减缓电池老化。本机支持该功能，开启后在需要时会自动充满。</div></div>
+        <div class="sec">谁在耗电 <em>按耗电速度排序</em></div>
+        <div class="card drain">
+          <div class="drow"><span class="dn"><i style="background:#8b5cf6"></i>Xcode（开发工具）</span><span class="muted">12.4 瓦</span><span style="color:var(--red);font-size:10px">高</span></div>
+          <div class="drow"><span class="dn"><i style="background:#e0533f"></i>谷歌浏览器</span><span class="muted">6.8 瓦</span><span style="color:var(--orange);font-size:10px">中</span></div>
+          <div class="drow"><span class="dn"><i style="background:#0a7cff"></i>显示器背光</span><span class="muted">5.2 瓦</span><span style="color:var(--orange);font-size:10px">中</span></div>
+          <div class="drow"><span class="dn"><i style="background:#a7adb8"></i>其他</span><span class="muted">2.1 瓦</span><span style="color:var(--green);font-size:10px">低</span></div></div>
+      </section>
+
+      <!-- 蓝牙外设 -->
+      <section class="module" data-module="bluetooth">
+        <div class="page-head"><div><h1>蓝牙外设</h1><div class="sub">鼠标、键盘、耳机、手机……电量集中在这里看，低电量会提醒你。</div></div>
+          <button class="btn gho sm" id="btRefresh">重新搜索</button></div>
+        <div class="bt-list" id="btList"></div>
+        <div class="bt-tip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3L2 20h20L12 3zM12 9v5M12 17v.5"/></svg>
+          <div><b>妙控鼠标电量 42%，建议近期充电。</b><br>低于 20% 时菜单栏会提醒。苹果不提供外设的「健康度」，我们只显示真实电量，不编造数字。</div></div>
+      </section>
+
+      <!-- 机身状态 -->
+      <section class="module" data-module="status">
+        <div class="page-head"><div><h1>机身状态</h1><div class="sub">实时指标与最近趋势。点顶部菜单栏的雪花图标，不用打开窗口也能看。</div></div><span class="tiny muted" id="hudClock">每 2 秒刷新</span></div>
+        <div class="quick4 hud4" id="hudGrid"></div>
+        <div class="card charge-tip" style="margin-top:15px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg>
+          <div><b>一切正常。</b><br>没有需要立刻处理的问题。缓存较大属于正常现象，可在「清理」里按中文说明自行判断。</div></div>
+      </section>
+
+      <!-- 卸载 -->
+      <section class="module" data-module="uninstall">
+        <div class="page-head"><div><h1>卸载</h1><div class="sub">卸载时把残留一起清掉。名字都翻成中文了，不再是一串看不懂的英文。</div></div></div>
+        <div class="uwrap"><div class="card applist" id="appList"></div><div class="card adetail" id="appDetail"></div></div>
+      </section>
+
+      <!-- 优化 -->
+      <section class="module" data-module="optimize">
+        <div class="page-head"><div><h1>优化</h1><div class="sub">每一项都说明「做了什么、有什么用」。可单独开关，执行前先看预览。</div></div></div>
+        <div class="card" id="optList"></div>
+        <div class="card optfoot" style="margin-top:14px;border-radius:0 0 12px 12px"><span class="tiny muted" id="optCount">已启用 5 项</span><div class="spacer"></div>
+          <button class="btn gho sm" id="optPreview">预览</button><button class="btn pri" id="optRun">运行已启用项</button></div>
+      </section>
+
+      <!-- 设置 -->
+      <section class="module" data-module="settings">
+        <div class="page-head"><div><h1>设置</h1><div class="sub">所有偏好只存在本机。项目 GPL-3.0 开源，代码可审计。</div></div></div>
+        <div class="sec">中文标识 <em>这是这一版的核心</em></div>
+        <div class="card setgroup">
+          <div class="setrow"><div class="setinfo"><b>所有名称显示为中文</b><p>文件、目录、程序、蓝牙设备都显示中文名 + 一句话解释。</p></div><div class="switch on" data-toggle></div></div>
+          <div class="setrow"><div class="setinfo"><b>默认隐藏英文原始路径</b><p>想看时点开关展开。对应清理页右上角「显示英文原名」。</p></div><div class="switch on" data-toggle></div></div>
+          <div class="setrow"><div class="setinfo"><b>本地模型解释档位</b><p>关闭＝零模型调用；混合模板＝中文模板＋模型填空；完整 AI＝模型生成说明。超时 8 秒、单次扫描最多 20 次调用。</p></div><div class="seg" id="aiTier"><button data-tier="off">关闭</button><button data-tier="hybrid" class="on">混合模板</button><button data-tier="full">完整 AI</button></div></div>
+          <div class="setrow"><div class="setinfo"><b>在 Dock 显示图标</b><p>关闭时只在顶部菜单栏常驻，空闲 5 秒刷新一次以省电。</p></div><div class="switch" data-toggle id="dockSw"></div></div></div>
+        <div class="sec">英文字典对照 <em>看不懂时来这里查</em></div>
+        <div class="card dict"><table><tbody id="dictBody"></tbody></table></div>
+        <div class="sec">菜单栏快速面板</div>
+        <div class="card setgroup" id="menuSet"></div>
+        <div class="sec">安全边界</div>
+        <div class="card setgroup">
+          <div class="setrow"><div class="setinfo"><b>默认移到废纸篓</b><p>可恢复；永久删除需要二次确认。</p></div><div class="switch on" data-toggle></div></div>
+          <div class="setrow"><div class="setinfo"><b>执行前先看预览</b><p>任何删除先列出清单，不静默执行。</p></div><div class="switch on" data-toggle></div></div>
+          <div class="setrow"><div class="setinfo"><b>外设低电量提醒</b><p>低于 20% 时在菜单栏提示。</p></div><div class="switch on" data-toggle></div></div></div>
+        <div class="sec">永不清理的清单</div>
+        <div class="card protect"><code>本地 AI 工具整根（含私钥与配置）</code><code>手机备份与同步</code><code>iCloud 本地文件</code><code>密码钥匙串</code><code>系统关键路径</code><code>APFS 数据卷</code><code>Homebrew</code><code>应用程序</code><code>外接卷</code><code>运行中的 App 数据</code></div>
+        <div class="sec">我额外保护的路径 <em>只加不减</em></div>
+        <div class="card setgroup">
+          <div class="setrow"><div class="setinfo"><b>加上你自己的私人目录</b><p>支持 ~/ 开头的路径模式；这些路径只会增加保护，永远不会因为规则被清理。</p></div>
+            <div style="display:flex;gap:6px"><input id="newProtect" placeholder="例如 ~/Documents/私人资料/**" style="padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:inherit;width:230px"><button class="btn gho sm" id="addProtect">添加</button></div>
+          </div>
+          <div id="customProtect" class="protect" style="margin-top:6px"></div>
+        </div>
+        <div class="sec">审计与安全 <em>所有操作可追溯</em></div>
+        <div class="card setgroup">
+          <div class="setrow"><div class="setinfo"><b>JSONL 审计日志</b><p>每次预览、移废纸篓与失败都记一条，带 SHA256 与前一条哈希，改动会留下痕迹。</p></div><span class="tag safe">已启用</span></div>
+          <div class="setrow"><div class="setinfo"><b>废纸篓失败处理</b><p>失败即停止并写日志，绝不静默改成永久删除。</p></div><span class="tag review">硬规则</span></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const I={trash:'<path d="M4 7h16M6 7l1 13h10l1-13M10 11v5M14 11v5"/>',folder:'<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',code:'<path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/>',doc:'<path d="M6 3h8l4 4v14H6zM14 3v4h4"/>',lock:'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',snap:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/>',phone:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'};
+const ico=(d,c='')=>`<svg class="${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const fmt=n=>n>=1024?(n/1024).toFixed(1)+' GB':n+' MB';
+
+/* 中文标识词典 */
+const DICT=[
+['~/Library/Caches','缓存文件','App 临时存放的东西，删了会自动生成'],
+['~/Library/Application Support','应用支持文件','App 的数据和插件，卸载残留常在这里'],
+['~/Library/Containers','应用沙盒数据','被系统隔离的 App 数据，里面可能有你的文档'],
+['~/Library/Developer/Xcode/DerivedData','编译缓存','Xcode 编译时的中间文件，删了下次编译慢一点'],
+['~/Library/Application Support/MobileSync','手机备份','用数据线给 iPhone 做的本地备份'],
+['~/Library/LaunchAgents','开机启动项','控制哪些程序登录后自动运行'],
+['~/Library/Preferences','设置文件','记住每个 App 的设置，别整文件夹删'],
+['~/Library/Keychains','密码钥匙串','存着账号密码和证书，绝对不能删'],
+['~/Library/Logs','日志文件','记录运行情况，排错用'],
+['Xcode','苹果开发工具','写 Mac 和 iPhone 软件用的工具'],
+['com.google.Chrome','谷歌浏览器','你用来上网的浏览器'],
+['windowserver','系统窗口服务','macOS 画窗口用的，不能关'],
+['node_modules','代码依赖包','编程项目下载的代码库，可重新下载'],
+['.dmg / .pkg','安装包','装软件用的文件，装完可以删'],
+['Time Machine 本地快照','本地恢复点','Mac 自己留的恢复副本，删了仍不影响外置备份盘']
+];
+
+/* 导航与菜单栏面板 */
+function goto(m){$$('.module').forEach(x=>x.classList.toggle('active',x.dataset.module===m));
+  $$('.nav').forEach(n=>n.classList.toggle('active',n.dataset.module===m));$('#content').scrollTop=0;$('#menuPop').classList.remove('show');$('#snowBtn').classList.remove('on')}
+$$('.nav').forEach(n=>n.onclick=()=>goto(n.dataset.module));
+$$('[data-goto]').forEach(b=>b.onclick=()=>goto(b.dataset.goto));
+$('#snowBtn').onclick=e=>{e.stopPropagation();const p=$('#menuPop');p.classList.toggle('show');$('#snowBtn').classList.toggle('on',p.classList.contains('show'))};
+$('#menuPop').onclick=e=>e.stopPropagation();
+document.addEventListener('click',()=>{$('#menuPop').classList.remove('show');$('#snowBtn').classList.remove('on')});
+$('#rawToggle').onclick=()=>document.body.classList.toggle('show-raw');
+
+/* 与 Rules/rules.json 对齐：protectedPaths 共 20 条，本页展示其中命中的 2 类 */
+const PROTECTED_PATH_COUNT=20;
+/* 清理数据：中文名 + 人话 + 原始路径 */
+const clean=[
+{cn:'系统缓存',raw:'/Library/Caches',say:'系统留下的临时文件，会自动重新生成',size:8200,risk:'review',confirm:true,icon:I.lock,
+ why:'命中系统缓存规则：可由系统重建，但按策略需单独确认，删除后首次使用可能略慢。',
+ files:[['系统与搜索索引','/Library/Caches/com.apple.metadata',3200],['云盘同步缓存','/Library/Caches/CloudKit',2600],['地图定位数据','/Library/Caches/GeoServices',2400]],
+ ai:'这是 macOS 为搜索和云服务建立的临时索引，属于可重建数据。删除不影响账号和已同步内容，但首次搜索会重新建索引。',on:false},
+{cn:'应用缓存',raw:'~/Library/Caches',say:'各个软件临时存放的东西，删了会自动生成',size:12400,risk:'safe',confirm:false,icon:I.trash,
+ why:'第三方应用缓存，应用会自己重建。不包含书签、历史记录和登录状态。',
+ files:[['聊天软件缓存','~/Library/Caches/Slack',3800],['音乐软件缓存','~/Library/Caches/Spotify',3400],['网盘缓存','~/Library/Caches/Dropbox',2900],['其他 14 个软件','—',2300]],
+ ai:'缓存由软件自己生成，删除后会重建。已跳过正在运行的软件的数据目录。',on:true},
+{cn:'编译缓存',raw:'~/Library/Developer/Xcode/DerivedData',say:'编译软件时的中间文件，删了下次编译慢一点，不影响项目',size:9800,risk:'review',confirm:true,icon:I.code,
+ why:'可由源码重新编译，但完整重建耗时较长。请确认近期是否需要快速编译。',
+ files:[['项目 A 的编译文件','DerivedData/SnowApp-7f3a',5200],['项目 B 的编译文件','DerivedData/LegacyKit-2b91',3100],['其他项目','DerivedData/Other-9c10',1500]],
+ ai:'识别为开发工具产生的编译中间产物，不是需要联网下载的依赖。重建不用联网，但大项目首次编译可能要几分钟。',on:false},
+{cn:'浏览器临时文件',raw:'Chrome / Safari / Firefox',say:'上网时留下的临时文件，不是你的书签和密码',size:3100,risk:'safe',confirm:false,icon:I.globe,
+ why:'仅临时缓存，不包含密码、Cookie 和历史记录。',
+ files:[['谷歌浏览器缓存','~/Library/Caches/com.google.Chrome',1800],['Safari 缓存','~/Library/Caches/com.apple.Safari',900],['火狐缓存','~/Library/Caches/Firefox',400]],
+ ai:'浏览器临时缓存，删掉后网页会重新下载资源。登录状态与历史记录不受影响。',on:true},
+{cn:'卸载残留文件',raw:'~/Library/Application Support',say:'软件删掉后没清干净的数据，可能占不少空间',size:2700,risk:'review',confirm:true,icon:I.doc,
+ why:'规则库未直接覆盖，由本地模型结合已安装 App 列表判定为残留；已排除个人文档目录，仍需你确认。',
+ files:[['已卸载设计软件的数据','~/Library/Application Support/Adobe',1400],['旧软件设置','~/Library/Preferences/com.oldapp.plist',300],['旧软件缓存','~/Library/Caches/com.legacy.tool',1000]],
+ ai:'这些路径对应的软件已不在应用程序里，判定为残留。建议确认没有命令行工具还依赖它们。',on:false},
+{cn:'运行日志',raw:'~/Library/Logs',say:'记录软件运行情况的文件，排错用，平时没用',size:1400,risk:'safe',confirm:false,icon:I.doc,
+ why:'历史日志，删除不影响软件运行；其中崩溃报告有独立规则。',
+ files:[['崩溃报告','~/Library/Logs/DiagnosticReports',800],['应用商店日志','~/Library/Logs/AppStore',600]],
+ ai:'历史日志用于排查问题。没有正在跟进的故障时，可以安全清理。',on:true},
+{cn:'废纸篓',raw:'~/.Trash',say:'你扔掉的东西还占着空间，清空才真正释放',size:4900,risk:'safe',confirm:true,icon:I.trash,
+ why:'规则判定为可删，但你已主动丢弃且清空后难以恢复，所以默认不勾选、清空前二次确认。',
+ files:[['旧安装包','~/.Trash/Xcode_16.dmg',2600],['截图与临时文件','~/.Trash/截图',1500],['其他','—',800]],
+ ai:'废纸篓里的项目已由你主动丢弃。清空前建议快速看一眼，确认没有误删。',on:false},
+{cn:'旧安装包',raw:'~/Downloads/*.dmg',say:'装软件用的文件，软件装好后就没用了',size:3900,risk:'review',confirm:true,icon:I.doc,
+ why:'可能需要重新下载。请确认对应软件已安装且不再需要安装包。',
+ files:[['安装包 A','~/Downloads/Xcode_16.dmg',2200],['安装包 B','~/Downloads/Figma.dmg',900],['其他安装文件','~/Downloads/*.pkg',800]],
+ ai:'这些是下载目录里的安装文件。删除不影响已安装的软件，重装时需要重新下载。',on:false},
+{cn:'本地恢复点',raw:'Time Machine 本地快照',say:'Mac 自己留的恢复副本，删了不影响外置备份盘',size:6200,risk:'review',confirm:true,icon:I.snap,
+ why:'独立规则：本地快照占用空间，删除后仍保留外置磁盘上的备份，但本地恢复点会减少。',
+ files:[['前天的快照','本地磁盘',2600],['上周的快照','本地磁盘',2200],['更早的快照','本地磁盘',1400]],
+ ai:'这些是 Time Machine 在本机留的恢复点。空间紧张时可清理，外置备份盘上的备份不受影响。',on:false},
+{cn:'手机备份文件',raw:'~/Library/Application Support/MobileSync',say:'用数据线给手机做的备份，删了只删电脑上的这份',size:5100,risk:'protected',confirm:false,icon:I.phone,
+ why:'命中保护清单：iOS 设备备份整根受保护，不进入清理候选，也不计入可释放空间。',
+ files:[['手机备份（最近）','MobileSync/Backup/最近',2800],['手机备份（旧）','MobileSync/Backup/旧',2300]],
+ ai:'这是电脑上的手机备份，与 iCloud 备份相互独立。已强制排除，不会被列入可清理项。',on:false,locked:true},
+{cn:'本地 AI 模型与配置',raw:'~/.ollama · ~/.claude · ~/.codex',say:'你在本机跑 AI 用的模型、私钥和聊天记录，不能删',size:28600,risk:'protected',confirm:false,icon:I.lock,
+ why:'命中保护清单：三个工具的整个目录都受保护，包含私钥、配置、模型权重与历史会话。',
+ files:[['本地 AI 模型','~/.ollama/models',18000],['工具配置与私钥','~/.ollama · ~/.claude · ~/.codex 的根目录',2200],['AI 会话记录','~/.claude/projects · ~/.codex/sessions',8400]],
+ ai:'本地模型权重、私钥与会话记录属于高价值数据。整根受保护，不进入清理候选。',on:false,locked:true}
+];
+function renderClean(){
+  $('#cleanList').innerHTML=clean.map((d,i)=>`<div class="item" data-i="${i}">
+    <div class="item-main"><div class="cb ${d.on?'checked':''} ${d.locked?'locked':''}" data-cb="${i}"></div>
+      <div class="ii">${ico(d.icon)}</div>
+      <div class="human"><div class="cn">${d.cn}</div><div class="say">${d.say}</div><div class="raw">原始名称：${d.raw}</div></div>
+      <div class="size">${fmt(d.size)}</div>
+      <div><span class="tag ${d.risk}">${d.risk==='protected'?'受保护':d.risk==='review'?'需你确认':d.confirm?'安全但需确认':'可安全删'}</span></div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div>
+    <div class="detail"><div class="reason"><b>为什么这样判断：</b>${d.why}</div>
+      <div class="files">${d.files.map(f=>`<div class="file"><div><span class="cn">${f[0]}</span><div class="raw">${f[1]}</div></div><span>${fmt(f[2])}</span></div>`).join('')}</div>
+      <div class="ai">${ico(I.spark)}<div><b>本地模型用大白话解释：</b>${d.ai}</div></div></div></div>`).join('');
+  $$('.item-main').forEach(m=>m.onclick=e=>{if(e.target.closest('[data-cb]'))return;m.parentElement.classList.toggle('open')});
+  $$('[data-cb]').forEach(c=>c.onclick=e=>{e.stopPropagation();const i=+c.dataset.cb;if(clean[i].locked)return;clean[i].on=!clean[i].on;updSel()});
+  updSel();
+}
+function updSel(){const s=clean.filter(d=>d.on&&!d.locked),mb=s.reduce((a,d)=>a+d.size,0);
+  $('#selN').textContent=s.length;$('#selS').textContent=fmt(mb);
+  // 汇总数字全部从条目实时计算，避免原型与规则库口径漂移
+  const usable=clean.filter(d=>d.risk!=='protected');
+  const parts=fmt(usable.reduce((a,d)=>a+d.size,0)).split(' ');
+  $('#cleanTotal').innerHTML=parts[0]+' <small>'+parts[1]+'</small>';
+  $('#protectCount').textContent='规则库保护路径 '+PROTECTED_PATH_COUNT+' 条 · 本次命中 '+(clean.length-usable.length)+' 项';
+  $('#confirmCount').textContent='需你确认 '+usable.filter(d=>d.confirm||d.risk==='review').length+' 项';
+  $$('[data-cb]').forEach((c,i)=>c.classList.toggle('checked',!!clean[i].on));
+  $('#navBadge').textContent=usable.length}
+renderClean();
+$('#expandAll').onclick=()=>{const it=$$('.item'),any=it.some(x=>!x.classList.contains('open'));it.forEach(x=>x.classList.toggle('open',any));$('#expandAll').textContent=any?'收起全部':'展开全部'};
+$('#selSafe').onclick=()=>{clean.forEach(d=>{if(!d.locked&&d.risk==='safe'&&!d.confirm)d.on=true});updSel()};
+$('#doTrash').onclick=()=>{const n=clean.filter(d=>d.on&&!d.locked).length;
+  if(!n){alert('请先勾选要清理的项目');return}
+  if(confirm('即将把 '+n+' 项移到废纸篓，操作会记入本地日志。继续吗？'))alert('原型演示：已生成清理计划，'+n+' 项已移入废纸篓（未执行真实文件操作）。')};
+function scan(btn){const p=$('#prog'),bar=$('i',p);p.classList.add('show');bar.style.width='0%';btn.disabled=true;let v=0;
+  const t=setInterval(()=>{v+=Math.random()*22;bar.style.width=Math.min(v,100)+'%';
+    if(v>=100){clearInterval(t);p.classList.remove('show');btn.disabled=false}},180)}
+$('#cleanScan').onclick=e=>scan(e.currentTarget);
+$('#dashScan').onclick=e=>{goto('clean');scan($('#cleanScan'))};
+
+/* 树图 */
+const tree=[
+{n:'你的文件',v:128,x:0,y:0,w:45,h:52,c:'#4a7fd4',risk:'',sub:[['文稿',42],['照片',31],['视频',28],['音乐',18],['其他',9]]},
+{n:'系统文件',v:84,x:45,y:0,w:30,h:30,c:'#7c8798',risk:'',sub:[['macOS 本身',56],['系统缓存',18],['其他',10]]},
+{n:'应用程序',v:68,x:75,y:0,w:25,h:52,c:'#8b6fd6',risk:'',sub:[['开发工具',22],['设计软件',18],['浏览器',6],['其他软件',22]]},
+{n:'编译缓存',v:62,x:45,y:30,w:30,h:22,c:'#e0a33c',risk:'review',sub:[['编译中间文件',31],['代码依赖包',18],['其他',13]]},
+{n:'照片和视频',v:78,x:0,y:52,w:28,h:48,c:'#4fa8a0',risk:'',sub:[['视频',40],['照片资料库',26],['音频',12]]},
+{n:'缓存文件',v:42,x:28,y:52,w:22,h:48,c:'#3fa87a',risk:'safe',sub:[['软件缓存',24],['浏览器缓存',10],['日志',8]]},
+{n:'文稿',v:55,x:50,y:52,w:25,h:48,c:'#5f93e0',risk:'',sub:[['工作文档',30],['PDF',14],['归档',11]]},
+{n:'其他',v:30,x:75,y:52,w:25,h:48,c:'#a7adb8',risk:'',sub:[['下载',16],['未分类',14]]}
+];
+function renderTree(data){$('#tm').innerHTML=data.map(d=>`<div class="cell" style="left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%;background:${d.c}" data-n="${d.n}">
+  ${d.risk?`<i class="dot" style="background:var(--${d.risk})"></i>`:''}<div class="n">${d.n}</div><div class="s">${d.v} GB</div></div>`).join('');
+  $$('.cell').forEach(c=>c.onclick=()=>{const d=data.find(x=>x.n===c.dataset.n);
+    $('#crumb').innerHTML=`<b>Macintosh HD</b> › ${d.n}`;$('#tmBack').style.display='inline-flex';
+    renderTree(d.sub.map((it,i)=>({n:it[0],v:it[1],x:(i%2)*50,y:Math.floor(i/2)*25,w:50,h:25,c:d.c,risk:d.risk,sub:[]})))})}
+renderTree(tree);
+$('#tmBack').onclick=()=>{renderTree(tree);$('#crumb').innerHTML='<b>Macintosh HD</b> › 全盘';$('#tmBack').style.display='none'};
+$('#bigFiles').innerHTML=[['旧版安装包','安装包，装完可删','2.2 GB'],['设计源文件','你保存的设计稿','1.8 GB'],['屏幕录制','录屏视频','1.4 GB'],['代码依赖包','编程下载的代码库','980 MB'],['应用归档','开发打包文件','860 MB']]
+.map(f=>`<div class="bf"><span class="bfi">${ico(I.doc)}</span><span class="bfi-c"><b>${f[0]}</b><span>${f[1]}</span></span><span class="bfs">${f[2]}</span></div>`).join('');
+$('#diskDecomp').innerHTML=[['缓存文件','软件临时文件',62,'#3fa87a'],['本地恢复点','系统留的恢复副本',46,'#e0a33c'],['手机备份','电脑上的手机备份',15,'#8b6fd6'],['编译缓存','开发中间文件',31,'#5b8def'],['其他','索引与元数据',24,'#a7adb8']]
+.map(d=>`<div class="bf"><span class="bfi" style="background:${d[3]}22;color:${d[3]}">${ico(I.folder)}</span><span class="bfi-c"><b>${d[0]}</b><span>${d[1]}</span></span><span class="bfs">${d[2]} GB</span></div>`).join('');
+$('#export').onclick=()=>alert('已生成报告（原型演示）。正式版会导出含中文名、原始路径、大小和风险的 JSON / CSV。');
+
+/* 内存 */
+const procs=[['苹果开发工具','Xcode','#8b5cf6',3200,18,'up'],['谷歌浏览器','Google Chrome','#e0533f',2400,12,'up'],
+['设计软件','Adobe Photoshop','#3fa87a',1500,6,'flat'],['代码编辑器','Cursor','#5f93e0',980,4,'up'],
+['系统窗口服务','WindowServer','#888',640,2,'flat'],['系统界面','Dock','#e0a33c',420,3,'down']];
+function renderProc(){$('#procList').innerHTML=procs.map(p=>`<div class="prow"><div class="pname"><i style="background:${p[2]}"></i><span title="${p[1]}">${p[0]}</span></div>
+  <span>${fmt(p[3])}</span><span>${p[4]}%</span><span class="trend ${p[5]}">${p[5]==='up'?'↑ 增长':p[5]==='down'?'↓ 下降':'— 平稳'}</span></div>`).join('')}
+renderProc();
+function chart(){let v=42;const pts=[];for(let i=0;i<60;i++){v+=(Math.random()-.47)*7;v=Math.max(18,Math.min(72,v));pts.push(v)}
+  const st=600/59,d=pts.map((p,i)=>`${i?'L':'M'}${(i*st).toFixed(1)},${(130-p).toFixed(1)}`).join(' ');
+  $('#memChart').innerHTML=`<rect x="0" y="${130*.28}" width="600" height="${130*.72}" fill="#eaf6ef"/><path d="${d} L600,130 L0,130 Z" fill="rgba(10,124,255,.10)"/><path d="${d}" fill="none" stroke="#0a7cff" stroke-width="2"/>`}
+chart();$('#memRefresh').onclick=()=>{chart();procs.forEach(p=>p[3]=Math.max(200,p[3]+(Math.random()-.5)*300|0));renderProc()};
+
+/* 蓝牙外设 */
+const bts=[
+{cn:'无线耳机',raw:'AirPods Pro 2',say:'降噪已开启 · 正在播放',bat:78,state:'已连接',cls:'on',ic:'<path d="M8 5v14M16 5v14M4 9v6h3l5 4V5L7 9H4z"/>'},
+{cn:'妙控鼠标',raw:'Magic Mouse',say:'上次充电在 3 天前',bat:42,state:'已连接',cls:'on',ic:'<rect x="7" y="2" width="10" height="20" rx="5"/><path d="M12 2v8"/>'},
+{cn:'妙控键盘',raw:'Magic Keyboard',say:'电量充足',bat:100,state:'已连接',cls:'on',ic:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/>'},
+{cn:'我的手机',raw:'iPhone 16 Pro',say:'在附近 · 可用于投屏和传文件',bat:91,state:'在附近',cls:'near',ic:I.phone},
+{cn:'我的平板',raw:'iPad Air',say:'2 小时前连接过',bat:60,state:'未连接',cls:'off',ic:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M10 18h4"/>'},
+{cn:'头戴耳机',raw:'Sony WH-1000XM5',say:'上次连接 昨天 22:10',bat:23,state:'未连接',cls:'off',ic:'<path d="M4 14v-2a8 8 0 0116 0v2M4 14h3v6H5a1 1 0 01-1-1zM20 14h-3v6h2a1 1 0 001-1z"/>'}
+];
+function renderBt(){$('#btList').innerHTML=bts.map(b=>{const lv=b.bat<=20?'crit':b.bat<=50?'low':'';
+  return `<div class="card bt"><div class="bt-ico">${ico(b.ic)}</div><div class="bt-info"><div class="n">${b.cn} <span class="tag ${b.cls==='on'?'safe':b.cls==='near'?'unknown':'unknown'}">${b.state}</span></div>
+  <div class="say">${b.say}</div><div class="raw">原始名称：${b.raw}</div></div>
+  <div class="batt-pill"><span class="shell"><i class="${lv}" style="width:${b.bat}%"></i></span><b>${b.bat}%</b></div></div>`}).join('')}
+renderBt();$('#btRefresh').onclick=()=>{renderBt();alert('已重新搜索周边设备（原型演示）。')};
+
+/* 状态 HUD */
+const hud=[['CPU 使用','18','%','#0a7cff'],['显卡','12','%','#8b5cf6'],['内存','9.1','GB','#1f9d68'],['磁盘读写','24','MB/s','#da8500'],
+['网络','1.2','MB/s','#0a7cff'],['电池','87','%','#1f9d68'],['温度','46','°C','#da8500'],['风扇','1820','转','#7c8798']];
+function spark(c){let v=28;const p=[];for(let i=0;i<24;i++){v+=(Math.random()-.5)*12;v=Math.max(8,Math.min(46,v));p.push(`${i},${50-v}`)}
+  return `<svg viewBox="0 0 24 50" preserveAspectRatio="none" style="width:100%;height:32px"><path d="${p.map((x,i)=>`${i?'L':'M'}${x}`).join(' ')}" fill="none" stroke="${c}" stroke-width="1.8" vector-effect="non-scaling-stroke"/></svg>`}
+function renderHud(){$('#hudGrid').innerHTML=hud.map(h=>`<div class="card quick" style="flex-direction:column;align-items:stretch;gap:2px">
+  <div class="tiny muted">${h[0]}</div><div style="font-size:19px;font-weight:650">${h[1]} <small style="font-size:10px;color:var(--t2);font-weight:400">${h[2]}</small></div>${spark(h[3])}</div>`).join('')}
+renderHud();let tick=0;setInterval(()=>{if(!$('[data-module="status"]').classList.contains('active'))return;tick++;
+  hud[0][1]=14+Math.floor(Math.random()*12)+'';hud[1][1]=8+Math.floor(Math.random()*10)+'';hud[2][1]=(8.8+Math.random()*.6).toFixed(1);
+  renderHud();$('#hudClock').textContent='已刷新 '+tick+' 次 · 每 2 秒'},2000);
+
+/* 卸载 */
+const apps=[
+{n:'苹果开发工具',raw:'Xcode',s:'7.8 GB',last:'今天',co:'#4a7fd4',l:'X',lt:3.2,items:[['编译缓存','DerivedData','1.8 GB'],['支持文件','Application Support/Xcode','900 MB'],['设置文件','com.apple.dt.Xcode.plist','500 MB']]},
+{n:'设计软件',raw:'Adobe Photoshop 2024',s:'4.2 GB',last:'3 个月前',co:'#1d1d1f',l:'Ps',lt:2.1,items:[['支持文件','Application Support/Adobe','1.4 GB'],['设置文件','com.adobe.Photoshop.plist','300 MB'],['缓存文件','Caches/com.adobe.Photoshop','400 MB']]},
+{n:'谷歌浏览器',raw:'Google Chrome',s:'1.1 GB',last:'今天',co:'#e0533f',l:'C',lt:.6,items:[['缓存文件','Caches/com.google.Chrome','400 MB'],['支持文件','Application Support/Google/Chrome','200 MB']]},
+{n:'代码编辑器',raw:'Visual Studio Code',s:'680 MB',last:'昨天',co:'#2f8fe0',l:'V',lt:.3,items:[['支持文件','Application Support/Code','200 MB'],['缓存文件','Caches/com.microsoft.VSCode','100 MB']]}
+];
+let sa=0;
+function renderApps(){$('#appList').innerHTML=apps.map((a,i)=>`<div class="app ${i===sa?'sel':''}" data-a="${i}"><span class="ai-co" style="background:${a.co}">${a.l}</span>
+  <span class="app-meta"><b>${a.n}</b><span class="say">${a.raw} · 上次使用 ${a.last}</span></span><span class="app-size">${a.s}</span></div>`).join('');
+  $$('[data-a]').forEach(r=>r.onclick=()=>{sa=+r.dataset.a;renderApps();renderAd()})}
+function renderAd(){const a=apps[sa];$('#appDetail').innerHTML=`<div class="adh"><span class="ai-co" style="background:${a.co}">${a.l}</span><div><h3>${a.n}</h3><div class="say">原始名称：${a.raw} · 软件本体 ${a.s}</div></div></div>
+  <div class="lt-total">能一起清掉的残留 <b>${a.lt.toFixed(1)} GB</b></div>
+  ${a.items.map(it=>`<div class="ltf"><span><span class="cn">${it[0]}</span><div class="raw">${it[1]}</div></span><span>${it[2]}</span></div>`).join('')}
+  <div class="ai" style="margin-top:12px">${ico(I.spark)}<div>已排除你的个人文稿和音乐目录。带系统扩展的软件会提示用厂商卸载器。</div></div>
+  <div class="adacts"><button class="btn dan sm" id="uninst">彻底卸载</button><button class="btn gho sm" id="clearData">只清数据</button></div>`;
+  $('#uninst').onclick=()=>alert('原型演示：先生成卸载计划并预览，软件本体默认移入废纸篓。');
+  $('#clearData').onclick=()=>alert('原型演示：只清数据，保留软件本体。')}
+renderApps();renderAd();
+
+/* 优化 */
+const opts=[['刷新网络设置','清理过期的网址解析记录','安全',true],['重建搜索索引','让 Mac 的搜索结果更准确','需确认',false],
+['刷新预览缩略图','修复预览不更新的问题','安全',true],['清理崩溃日志','移除历史崩溃报告','安全',true],
+['重建程序登记','修复「打开方式」异常','需确认',false],['检查开机启动项','只做检查和引导，不硬改系统','安全',true]];
+function renderOpt(){$('#optList').innerHTML=opts.map((o,i)=>`<div class="opt"><div class="switch ${o[3]?'on':''}" data-o="${i}"></div>
+  <div class="opt-info"><b>${o[0]} <span class="tag ${o[2]==='安全'?'safe':'review'}">${o[2]}</span></b><p>${o[1]}</p></div></div>`).join('');
+  $$('[data-o]').forEach(s=>s.onclick=()=>{const i=+s.dataset.o;opts[i][3]=!opts[i][3];renderOpt()});
+  $('#optCount').textContent=`已启用 ${opts.filter(o=>o[3]).length} 项`}
+renderOpt();
+$('#optPreview').onclick=()=>alert('预览：共 '+opts.filter(o=>o[3]).length+' 项操作（原型演示，未执行）。');
+$('#optRun').onclick=()=>{if(!opts.some(o=>o[3])){alert('请先启用至少一项');return}alert('原型演示：逐项执行并记录日志。')};
+
+/* 设置 */
+$('#dictBody').innerHTML=DICT.map(d=>`<tr><td>${d[0]}</td><td>${d[1]}</td><td>${d[2]}</td></tr>`).join('');
+const menuSet=[['磁盘可用空间','菜单栏显示剩余容量',true],['内存占用','显示已用内存',true],['电池与外设','显示电量低的设备',true],['快速清理入口','在面板里放一键清理',true],['告警小圆点','有可清理项时提示',true]];
+$('#menuSet').innerHTML=menuSet.map(o=>`<div class="setrow"><div class="setinfo"><b>${o[0]}</b><p>${o[1]}</p></div><div class="switch ${o[2]?'on':''}" data-toggle></div></div>`).join('');
+$$('[data-toggle]').forEach(s=>s.onclick=()=>s.classList.toggle('on'));
+/* 模型三档位与自定义保护路径：原型用 localStorage，真实版落在核心库策略与独立配置文件 */
+let customPaths=[];
+try{customPaths=JSON.parse(localStorage.getItem('snow_custom_protect')||'[]')}catch(e){customPaths=[]}
+function renderProtect(){
+  $('#customProtect').innerHTML=customPaths.length
+    ?customPaths.map((p,i)=>`<span class="tag review" style="margin:3px">${p} <b data-del="${i}" style="cursor:pointer">×</b></span>`).join('')
+    :'<span class="muted">还没有额外保护路径。加上后，这些目录永远不会进入清理候选。</span>';
+  $$('[data-del]').forEach(b=>b.onclick=()=>{customPaths.splice(+b.dataset.del,1);saveProtect()});
+}
+function saveProtect(){try{localStorage.setItem('snow_custom_protect',JSON.stringify(customPaths))}catch(e){}}
+renderProtect();
+$('#addProtect').onclick=()=>{
+  const v=$('#newProtect').value.trim();
+  if(!/^(\/|~\/)/.test(v)){alert('请填写以 / 或 ~/ 开头的路径');return}
+  if(v.includes('../')){alert('不允许 .. 路径跳转');return}
+  if(!customPaths.includes(v))customPaths.push(v);
+  $('#newProtect').value='';saveProtect();renderProtect();
+};
+$$('[data-tier]').forEach(b=>b.onclick=()=>{
+  $$('[data-tier]').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const note={off:'模型调用已关闭，全部判定来自规则库。',hybrid:'混合模板：中文模板 + 模型填空，超时 8 秒。',full:'完整 AI 解释：模型生成大白话，仍不能批准删除。'}[b.dataset.tier];
+  setTimeout(()=>alert(note),0);
+});
+</script>
+</body>
+</html>

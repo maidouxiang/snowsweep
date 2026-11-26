@@ -1,0 +1,540 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-24",
+  "families": [
+    {
+      "id": "adobe",
+      "name": "Adobe",
+      "aliases": [
+        "Adobe",
+        "Creative Cloud"
+      ],
+      "teamIDs": [
+        "JQ525L2MZD"
+      ],
+      "bundlePrefixes": [
+        "com.adobe."
+      ],
+      "hostBundleIDs": [
+        "com.adobe.Photoshop",
+        "com.adobe.AfterEffects",
+        "com.adobe.PremierePro",
+        "com.adobe.illustrator",
+        "com.adobe.MediaEncoder",
+        "com.adobe.InDesign",
+        "com.adobe.LightroomClassicCC"
+      ],
+      "hostBundlePrefixes": [
+        "com.adobe.LightroomClassicCC"
+      ],
+      "receiptPrefixes": [
+        "com.adobe."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Adobe/CEP/extensions",
+        "/Library/Application Support/Adobe/CEP/extensions",
+        "~/Library/Application Support/Adobe/UXP",
+        "/Library/Application Support/Adobe/UXP",
+        "~/Library/Application Support/Adobe/Plug-Ins",
+        "/Library/Application Support/Adobe/Plug-Ins",
+        "~/Library/Application Support/Adobe/CPC"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "genuine",
+        "rlm",
+        "credential"
+      ],
+      "notes": "Adobe 宿主与 CEP/UXP 扩展；许可证和正版验证不删。"
+    },
+    {
+      "id": "redgiant",
+      "name": "Red Giant",
+      "aliases": [
+        "Red Giant",
+        "RedGiant",
+        "Trapcode",
+        "Magic Bullet",
+        "Universe"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.redgiant.",
+        "com.redgiantplugins."
+      ],
+      "hostBundleIDs": [
+        "com.adobe.AfterEffects",
+        "com.adobe.PremierePro"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.redgiant.",
+        "com.redgiantplugins."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Red Giant",
+        "/Library/Application Support/Red Giant",
+        "~/Library/Application Support/RedGiant",
+        "/Library/Application Support/RedGiant"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "rlm",
+        "credential"
+      ],
+      "notes": "Trapcode / Magic Bullet / Universe 等影视插件；宿主通常是 AE/PR。"
+    },
+    {
+      "id": "maxon",
+      "name": "Maxon",
+      "aliases": [
+        "Maxon",
+        "Cinema 4D",
+        "C4D"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.maxon.",
+        "net.maxon."
+      ],
+      "hostBundleIDs": [
+        "com.maxon.cinema4d"
+      ],
+      "hostBundlePrefixes": [
+        "com.maxon.",
+        "net.maxon."
+      ],
+      "receiptPrefixes": [
+        "com.maxon.",
+        "net.maxon."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Maxon",
+        "/Library/Application Support/Maxon",
+        "~/Library/Preferences/com.maxon",
+        "/Library/Preferences/com.maxon"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "rlm",
+        "credential"
+      ],
+      "notes": "Cinema 4D 与 Maxon 插件/授权。"
+    },
+    {
+      "id": "fxfactory",
+      "name": "FxFactory",
+      "aliases": [
+        "FxFactory",
+        "FxPlug"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.fxfactory."
+      ],
+      "hostBundleIDs": [
+        "com.apple.FinalCut",
+        "com.apple.Motion",
+        "com.adobe.AfterEffects",
+        "com.adobe.PremierePro"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.fxfactory."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/FxFactory",
+        "/Library/Application Support/FxFactory",
+        "~/Library/Application Support/FxPlug",
+        "/Library/Application Support/FxPlug"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "FxFactory 管理的 FxPlug 插件包。"
+    },
+    {
+      "id": "aescripts",
+      "name": "aescripts",
+      "aliases": [
+        "aescripts",
+        "aescripts + aeplugins",
+        "ZXP"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.aescripts."
+      ],
+      "hostBundleIDs": [
+        "com.adobe.AfterEffects",
+        "com.adobe.PremierePro"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.aescripts."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/aescripts",
+        "/Library/Application Support/aescripts",
+        "~/Library/Application Support/aescripts + aeplugins"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "AE/PR 扩展脚本与 ZXP 安装的插件。"
+    },
+    {
+      "id": "blackmagic",
+      "name": "Blackmagic Design",
+      "aliases": [
+        "Blackmagic",
+        "DaVinci Resolve",
+        "Fusion"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.blackmagic-design."
+      ],
+      "hostBundleIDs": [
+        "com.blackmagic-design.DaVinciResolve",
+        "com.blackmagic-design.Fusion"
+      ],
+      "hostBundlePrefixes": [
+        "com.blackmagic-design."
+      ],
+      "receiptPrefixes": [
+        "com.blackmagic-design."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Blackmagic Design",
+        "/Library/Application Support/Blackmagic Design"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "DaVinci Resolve / Fusion 与 OFX 插件。"
+    },
+    {
+      "id": "borisfx",
+      "name": "Boris FX",
+      "aliases": [
+        "Boris FX",
+        "BorisFX",
+        "Sapphire",
+        "Continuum",
+        "Mocha"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.borisfx.",
+        "com.boris."
+      ],
+      "hostBundleIDs": [
+        "com.adobe.AfterEffects",
+        "com.adobe.PremierePro",
+        "com.blackmagic-design.DaVinciResolve"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.borisfx.",
+        "com.boris."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/BorisFX",
+        "/Library/Application Support/BorisFX",
+        "~/Library/Application Support/Boris FX",
+        "/Library/Application Support/Boris FX"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "rlm",
+        "credential"
+      ],
+      "notes": "Sapphire / Continuum / Mocha 等影视插件。"
+    },
+    {
+      "id": "topaz",
+      "name": "Topaz Labs",
+      "aliases": [
+        "Topaz",
+        "Topaz Labs",
+        "Topaz Video AI",
+        "Topaz Photo AI"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.topazlabs.",
+        "com.topaz."
+      ],
+      "hostBundleIDs": [
+        "com.adobe.Photoshop",
+        "com.adobe.AfterEffects",
+        "com.adobe.PremierePro"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.topazlabs.",
+        "com.topaz."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Topaz Labs",
+        "/Library/Application Support/Topaz Labs",
+        "~/Library/Application Support/Topaz Labs LLC"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "Topaz 图像/视频增强插件与模型缓存。"
+    },
+    {
+      "id": "applepro",
+      "name": "Apple Pro Apps",
+      "aliases": [
+        "Final Cut Pro",
+        "Motion",
+        "Compressor"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.apple.FinalCut",
+        "com.apple.Motion",
+        "com.apple.Compressor"
+      ],
+      "hostBundleIDs": [
+        "com.apple.FinalCut",
+        "com.apple.Motion",
+        "com.apple.Compressor"
+      ],
+      "hostBundlePrefixes": [
+        "com.apple.FinalCut",
+        "com.apple.Motion",
+        "com.apple.Compressor"
+      ],
+      "receiptPrefixes": [
+        "com.apple.pkg.FinalCut",
+        "com.apple.pkg.Motion",
+        "com.apple.pkg.Compressor"
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Final Cut Pro",
+        "/Library/Application Support/Final Cut Pro",
+        "~/Movies/Motion Templates"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential",
+        "system"
+      ],
+      "notes": "Final Cut Pro / Motion / Compressor 模板与插件。"
+    },
+    {
+      "id": "avid",
+      "name": "Avid",
+      "aliases": [
+        "Avid",
+        "Media Composer",
+        "Pro Tools"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.avid."
+      ],
+      "hostBundleIDs": [
+        "com.avid.mediacomposer",
+        "com.avid.ProTools"
+      ],
+      "hostBundlePrefixes": [
+        "com.avid."
+      ],
+      "receiptPrefixes": [
+        "com.avid."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Avid",
+        "/Library/Application Support/Avid"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "Media Composer / Pro Tools 插件与共享组件。"
+    },
+    {
+      "id": "izotope",
+      "name": "iZotope",
+      "aliases": [
+        "iZotope",
+        "Ozone",
+        "RX",
+        "Neutron",
+        "Nectar"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.izotope."
+      ],
+      "hostBundleIDs": [
+        "com.apple.logic10",
+        "com.ableton.live",
+        "com.steinberg.cubase",
+        "com.adobe.Audition"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.izotope."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/iZotope",
+        "/Library/Application Support/iZotope"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "音频插件；宿主通常是 DAW，不是 iZotope 自己的应用。"
+    },
+    {
+      "id": "nativeinstruments",
+      "name": "Native Instruments",
+      "aliases": [
+        "Native Instruments",
+        "Kontakt",
+        "Maschine",
+        "Reaktor"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.native-instruments."
+      ],
+      "hostBundleIDs": [
+        "com.apple.logic10",
+        "com.ableton.live",
+        "com.steinberg.cubase"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.native-instruments."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Native Instruments",
+        "/Library/Application Support/Native Instruments"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "Kontakt / Maschine / Reaktor 音源与音频插件。"
+    },
+    {
+      "id": "waves",
+      "name": "Waves",
+      "aliases": [
+        "Waves",
+        "Waves Audio"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.waves."
+      ],
+      "hostBundleIDs": [
+        "com.apple.logic10",
+        "com.ableton.live",
+        "com.steinberg.cubase",
+        "com.adobe.Audition"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.waves."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Waves",
+        "/Library/Application Support/Waves"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "Waves 音频插件与授权。"
+    },
+    {
+      "id": "arturia",
+      "name": "Arturia",
+      "aliases": [
+        "Arturia",
+        "Analog Lab",
+        "V Collection"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.arturia."
+      ],
+      "hostBundleIDs": [
+        "com.apple.logic10",
+        "com.ableton.live",
+        "com.steinberg.cubase"
+      ],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.arturia."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/Arturia",
+        "/Library/Application Support/Arturia"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "credential"
+      ],
+      "notes": "Arturia 音源与音频插件。"
+    },
+    {
+      "id": "rlm",
+      "name": "RLM 授权服务",
+      "aliases": [
+        "RLM",
+        "Reprise License Manager"
+      ],
+      "teamIDs": [],
+      "bundlePrefixes": [
+        "com.rlmlicenseserver.",
+        "com.reprisesoftware."
+      ],
+      "hostBundleIDs": [],
+      "hostBundlePrefixes": [],
+      "receiptPrefixes": [
+        "com.rlmlicenseserver.",
+        "com.reprisesoftware."
+      ],
+      "pluginRoots": [
+        "~/Library/Application Support/RLM",
+        "/Library/Application Support/RLM",
+        "~/Library/Preferences/com.rlmlicenseserver"
+      ],
+      "protectedTokens": [
+        "license",
+        "licen",
+        "rlm",
+        "credential"
+      ],
+      "notes": "许可证服务，永远受保护，不进入清理候选。"
+    }
+  ]
+}

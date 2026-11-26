@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<!-- 历史原型 v1：保留用于对比。当前版本是 index-v2.html（全中文标识 + 电池 + 蓝牙 + 菜单栏面板）。
+     v1 内的规则库 v0.1.0 文案为当时快照，不代表当前规则库 v0.2.0。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnowSweep · 界面原型</title>
+<style>
+:root{
+  --bg-desktop:#dfe3ea;--bg-window:#f6f7f9;--bg-sidebar:#e9ebf0;--bg-card:#ffffff;
+  --bg-hover:#eceef3;--bg-inset:#f0f2f6;--text:#1d1d1f;--text-2:#6b6f76;--text-3:#9a9ea6;
+  --accent:#0a7cff;--accent-soft:#e6f1ff;--safe:#22a06b;--safe-bg:#e6f5ee;
+  --review:#e08a00;--review-bg:#fdf1dd;--protected:#d93a34;--protected-bg:#fbe9e8;
+  --unknown:#8e9099;--unknown-bg:#eeeff2;--border:rgba(0,0,0,.09);--border-2:rgba(0,0,0,.14);
+  --radius:12px;--radius-sm:8px;--shadow:0 22px 70px rgba(20,28,45,.28),0 2px 8px rgba(20,28,45,.12);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--text);background:var(--bg-desktop);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:46px 20px 30px;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+svg{display:block}
+
+/* ===== macOS 菜单栏 ===== */
+.menubar{position:fixed;top:0;left:0;right:0;height:30px;background:rgba(248,249,251,.82);
+  backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);
+  display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+  border-bottom:.5px solid rgba(0,0,0,.1);z-index:100;font-size:13px}
+.menu-left,.menu-right{display:flex;align-items:center;gap:17px;height:100%}
+.apple{width:15px;height:15px}
+.menu-item{font-weight:500;color:#2b2b2e;white-space:nowrap}
+.menu-item.strong{font-weight:600}
+.menu-right{gap:14px;font-size:12.5px;color:#2b2b2e}
+.status-item{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.status-item svg{width:15px;height:15px}
+.menu-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+/* ===== 窗口 ===== */
+.window{width:min(1180px,100%);height:min(760px,calc(100vh - 92px));background:var(--bg-window);
+  border-radius:13px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;
+  border:.5px solid rgba(0,0,0,.16)}
+.titlebar{height:42px;flex:0 0 42px;background:linear-gradient(#f7f8fa,#eff1f5);
+  border-bottom:.5px solid var(--border);display:flex;align-items:center;padding:0 15px;gap:8px;position:relative}
+.traffic{width:12px;height:12px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.traffic.red{background:#ff5f57}.traffic.yellow{background:#febc2e}.traffic.green{background:#28c840}
+.traffic svg{opacity:0;width:7px;height:7px}.traffic:hover svg{opacity:.55}
+.title-label{position:absolute;left:0;right:0;text-align:center;font-size:13px;font-weight:600;color:#4a4d52;pointer-events:none}
+.win-body{flex:1;display:flex;min-height:0}
+
+/* ===== 侧边栏 ===== */
+.sidebar{width:210px;flex:0 0 210px;background:var(--bg-sidebar);border-right:.5px solid var(--border);
+  display:flex;flex-direction:column;padding:14px 10px;overflow-y:auto}
+.side-group-label{font-size:10.5px;font-weight:600;color:var(--text-3);letter-spacing:.06em;
+  padding:12px 10px 6px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;
+  font-size:13px;font-weight:500;color:#3c3f44;width:100%;text-align:left;transition:background .12s}
+.nav-item:hover{background:rgba(0,0,0,.045)}
+.nav-item.active{background:var(--accent);color:#fff}
+.nav-item.active .nav-icon{color:#fff}
+.nav-icon{width:18px;height:18px;color:#5c6068;flex:0 0 18px}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:600;background:var(--protected);color:#fff;
+  padding:1px 6px;border-radius:9px}
+.nav-item.active .nav-badge{background:rgba(255,255,255,.28)}
+.sidebar-spacer{flex:1;min-height:18px}
+.local-badge{margin:0 4px 4px;padding:10px;border-radius:9px;background:rgba(255,255,255,.6);
+  border:.5px solid var(--border);font-size:11px;color:var(--text-2);line-height:1.55}
+.local-badge b{color:var(--safe);font-weight:600}
+.local-row{display:flex;align-items:center;gap:6px}
+.local-row svg{width:13px;height:13px;color:var(--safe)}
+
+/* ===== 主内容 ===== */
+.content{flex:1;min-width:0;overflow-y:auto;background:var(--bg-window)}
+.module{display:none;padding:24px 30px 40px}
+.module.active{display:block}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
+.page-title{font-size:22px;font-weight:650;letter-spacing:-.02em}
+.page-sub{font-size:12.5px;color:var(--text-2);margin-top:5px;line-height:1.5}
+.btn{padding:8px 15px;border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;
+  align-items:center;gap:7px;transition:.12s;white-space:nowrap}
+.btn svg{width:14px;height:14px}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 1px 3px rgba(10,124,255,.3)}
+.btn-primary:hover{background:#0069e0}
+.btn-primary:disabled{background:#b9c6d6;cursor:not-allowed;box-shadow:none}
+.btn-ghost{background:var(--bg-card);border:.5px solid var(--border-2);color:var(--text)}
+.btn-ghost:hover{background:var(--bg-hover)}
+.btn-danger{background:var(--protected);color:#fff}
+.btn-sm{padding:5px 10px;font-size:11.5px}
+.card{background:var(--bg-card);border:.5px solid var(--border);border-radius:var(--radius);
+  box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.sec-title{font-size:13px;font-weight:600;margin:22px 0 11px;display:flex;align-items:center;gap:8px}
+.sec-title .hint{font-size:11px;color:var(--text-3);font-weight:400}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px}
+.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.tag.safe{color:var(--safe);background:var(--safe-bg)}
+.tag.review{color:var(--review);background:var(--review-bg)}
+.tag.protected{color:var(--protected);background:var(--protected-bg)}
+.tag.unknown{color:var(--unknown);background:var(--unknown-bg)}
+.muted{color:var(--text-2)}
+.tiny{font-size:11px}
+.divider{height:.5px;background:var(--border);margin:16px 0}
+
+/* 概览 */
+.health-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+.health-hero{padding:22px 24px;display:flex;align-items:center;gap:24px}
+.ring-wrap{position:relative;width:104px;height:104px;flex:0 0 104px}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:#e9ecf1;stroke-width:9}
+.ring-fg{fill:none;stroke:var(--safe);stroke-width:9;stroke-linecap:round;stroke-dasharray:282.7;stroke-dashoffset:22}
+.ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num b{font-size:27px;font-weight:650;line-height:1}
+.ring-num span{font-size:10.5px;color:var(--text-2);margin-top:3px}
+.health-info{flex:1;min-width:0}
+.health-info h3{font-size:17px;font-weight:600;margin-bottom:5px}
+.health-info p{font-size:12px;color:var(--text-2);line-height:1.6}
+.health-actions{display:flex;gap:9px;margin-top:14px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat-card{padding:15px 16px}
+.stat-card .label{font-size:11px;color:var(--text-2);display:flex;align-items:center;gap:6px}
+.stat-card .label svg{width:13px;height:13px}
+.stat-card .value{font-size:23px;font-weight:650;margin-top:7px;letter-spacing:-.02em}
+.stat-card .value small{font-size:12px;color:var(--text-2);font-weight:400}
+.bar{height:6px;border-radius:4px;background:#e9ecf1;overflow:hidden;margin-top:10px;display:flex}
+.bar>i{display:block;height:100%}
+.stat-foot{font-size:10.5px;color:var(--text-3);margin-top:7px}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.quick{display:flex;align-items:center;gap:11px;padding:14px;text-align:left;width:100%}
+.quick:hover{background:var(--bg-hover)}
+.q-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:0 0 34px}
+.q-icon svg{width:18px;height:18px}
+.q-icon.blue{background:var(--accent-soft);color:var(--accent)}
+.q-icon.green{background:var(--safe-bg);color:var(--safe)}
+.q-icon.orange{background:var(--review-bg);color:var(--review)}
+.q-icon.purple{background:#efe9fb;color:#8b5cf6}
+.quick b{display:block;font-size:12.5px;font-weight:600}
+.quick span{display:block;font-size:10.5px;color:var(--text-2);margin-top:2px}
+.activity{padding:6px 16px}
+.activity-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:.5px solid var(--border);font-size:12px}
+.activity-row:last-child{border:none}
+.act-dot{width:7px;height:7px;border-radius:50%;flex:0 0 7px}
+.act-time{margin-left:auto;color:var(--text-3);font-size:11px;white-space:nowrap}
+
+/* 清理 */
+.clean-summary{padding:17px 20px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.clean-big{font-size:30px;font-weight:680;letter-spacing:-.03em;color:var(--accent)}
+.clean-big small{font-size:14px;font-weight:500;color:var(--text-2)}
+.summary-sep{width:1px;height:30px;background:var(--border)}
+.summary-meta{font-size:11.5px;color:var(--text-2);line-height:1.6}
+.summary-meta b{color:var(--text);font-weight:600}
+.scan-progress{height:4px;border-radius:3px;background:#e9ecf1;overflow:hidden;margin-top:12px;display:none}
+.scan-progress.show{display:block}
+.scan-progress>i{display:block;height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .25s}
+.clean-list{display:flex;flex-direction:column;gap:9px}
+.clean-item{border:.5px solid var(--border);border-radius:10px;background:var(--bg-card);overflow:hidden;transition:box-shadow .15s}
+.clean-item:hover{box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.clean-main{display:flex;align-items:center;gap:13px;padding:13px 15px}
+.cb{width:17px;height:17px;border-radius:5px;border:1.5px solid #c3c7cf;flex:0 0 17px;
+  display:flex;align-items:center;justify-content:center;transition:.12s;background:#fff}
+.cb.checked{background:var(--accent);border-color:var(--accent)}
+.cb.checked::after{content:"";width:8px;height:4.5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.cb.locked{background:var(--protected-bg);border-color:#e8b9b6;cursor:not-allowed}
+.cb.locked::after{content:"";width:8px;height:1.5px;background:var(--protected);transform:rotate(-45deg)}
+.clean-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 32px;background:var(--bg-inset);color:#5c6068}
+.clean-icon svg{width:17px;height:17px}
+.clean-name{font-size:13px;font-weight:600;flex:1;min-width:0}
+.clean-name .path{display:block;font-size:10.5px;color:var(--text-3);font-weight:400;margin-top:3px}
+.clean-size{font-size:13px;font-weight:600;white-space:nowrap;width:70px;text-align:right}
+.clean-tag-wrap{width:66px;display:flex;justify-content:flex-end}
+.chev{width:15px;height:15px;color:var(--text-3);transition:transform .18s}
+.clean-item.open .chev{transform:rotate(90deg)}
+.clean-detail{display:none;padding:0 15px 14px 60px}
+.clean-item.open .clean-detail{display:block}
+.detail-reason{font-size:11.5px;color:var(--text-2);line-height:1.6;margin-bottom:10px}
+.file-rows{background:var(--bg-inset);border-radius:8px;padding:4px 11px;margin-bottom:9px}
+.file-row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:11px;border-bottom:.5px solid var(--border)}
+.file-row:last-child{border:none}
+.file-row .fpath{color:var(--text-2);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-row .fsize{color:var(--text);white-space:nowrap;font-weight:500}
+.ai-note{display:flex;gap:9px;background:linear-gradient(90deg,#f0f6ff,#f7faff);border:.5px solid #d9e8ff;
+  border-radius:8px;padding:10px 12px;font-size:11px;line-height:1.6;color:#33465f}
+.ai-note svg{width:15px;height:15px;color:var(--accent);flex:0 0 15px;margin-top:1px}
+.ai-note b{color:var(--accent)}
+.clean-foot{position:sticky;bottom:0;margin:18px -30px -40px;padding:13px 30px;background:rgba(246,247,249,.93);
+  backdrop-filter:blur(12px);border-top:.5px solid var(--border);display:flex;align-items:center;gap:14px}
+.clean-foot .selected{font-size:12px;color:var(--text-2)}
+.clean-foot .selected b{color:var(--text);font-weight:600}
+.clean-foot .spacer{flex:1}
+.protect-note{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-2);
+  background:var(--protected-bg);border-radius:8px;padding:9px 12px;margin-top:12px}
+.protect-note svg{width:14px;height:14px;color:var(--protected);flex:0 0 14px}
+
+/* 空间分析 */
+.analyze-wrap{display:grid;grid-template-columns:1.6fr .95fr;gap:16px}
+.treemap-card{padding:16px}
+.tm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.crumb{font-size:11.5px;color:var(--text-2)}
+.crumb b{color:var(--text)}
+.treemap{position:relative;width:100%;height:410px;border-radius:9px;overflow:hidden;background:#e9ecf1}
+.tm-cell{position:absolute;border:1.5px solid #fff;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:9px;cursor:pointer;overflow:hidden;transition:filter .15s,transform .15s}
+.tm-cell:hover{filter:brightness(.94);z-index:2}
+.tm-cell .tm-name{font-size:11.5px;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25);line-height:1.25}
+.tm-cell .tm-size{font-size:10px;color:rgba(255,255,255,.86);margin-top:2px}
+.tm-cell .tm-tag{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.4)}
+.tm-legend{display:flex;gap:15px;margin-top:12px;font-size:10.5px;color:var(--text-2)}
+.tm-legend span{display:flex;align-items:center;gap:5px}
+.tm-legend i{width:8px;height:8px;border-radius:50%}
+.side-panel{padding:16px;display:flex;flex-direction:column}
+.side-panel h4{font-size:13px;font-weight:600;margin-bottom:3px}
+.side-panel .sub{font-size:11px;color:var(--text-2);margin-bottom:12px}
+.bigfile{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid var(--border)}
+.bigfile:last-child{border:none}
+.bf-icon{width:28px;height:28px;border-radius:7px;background:var(--bg-inset);display:flex;align-items:center;justify-content:center;flex:0 0 28px;color:#6b6f76}
+.bf-icon svg{width:14px;height:14px}
+.bf-info{flex:1;min-width:0}
+.bf-info b{display:block;font-size:11.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bf-info span{font-size:10px;color:var(--text-3)}
+.bf-size{font-size:11.5px;font-weight:600}
+.disk-usage{padding:15px 16px;margin-top:16px}
+.disk-usage .du-top{display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:10px}
+.du-bar{height:13px;border-radius:7px;overflow:hidden;display:flex;background:#e9ecf1}
+.du-bar i{height:100%}
+.du-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:11px;font-size:10.5px;color:var(--text-2)}
+.du-legend span{display:flex;align-items:center;gap:5px}
+.du-legend i{width:8px;height:8px;border-radius:2px}
+
+/* 内存 */
+.mem-top{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.mem-gauge{padding:20px;display:flex;align-items:center;gap:22px}
+.mem-ring{width:118px;height:118px;flex:0 0 118px;position:relative}
+.mem-ring svg{transform:rotate(-90deg)}
+.mem-ring .ring-fg{stroke:var(--review);stroke-dasharray:314.2;stroke-dashoffset:88}
+.mem-ring .ring-num b{font-size:24px}
+.mem-info h3{font-size:16px;font-weight:600}
+.mem-info p{font-size:11.5px;color:var(--text-2);line-height:1.65;margin-top:6px}
+.mem-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}
+.metric{padding:13px 14px}
+.metric .l{font-size:10.5px;color:var(--text-2)}
+.metric .v{font-size:19px;font-weight:650;margin-top:5px}
+.metric .v small{font-size:11px;color:var(--text-2);font-weight:400}
+.chart-card{padding:16px}
+.chart-card h4{font-size:12.5px;font-weight:600;margin-bottom:2px}
+.chart-card .sub{font-size:10.5px;color:var(--text-3);margin-bottom:10px}
+.mem-chart{width:100%;height:132px}
+.proc-card{padding:4px 16px;margin-top:16px}
+.proc-head,.proc-row{display:grid;grid-template-columns:1.7fr .8fr .8fr .7fr;align-items:center;gap:10px;padding:10px 0;font-size:11.5px}
+.proc-head{font-size:10.5px;color:var(--text-3);border-bottom:.5px solid var(--border)}
+.proc-row{border-bottom:.5px solid var(--border)}
+.proc-row:last-child{border:none}
+.proc-name{display:flex;align-items:center;gap:9px;font-weight:500;min-width:0}
+.proc-name .pdot{width:8px;height:8px;border-radius:3px;flex:0 0 8px}
+.proc-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trend{font-size:10.5px;font-weight:600}
+.trend.up{color:var(--protected)}.trend.down{color:var(--safe)}.trend.flat{color:var(--text-3)}
+
+/* 卸载 */
+.uninstall-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+.app-list{padding:5px 14px}
+.app-row{display:flex;align-items:center;gap:11px;padding:10px 4px;border-bottom:.5px solid var(--border);cursor:pointer;border-radius:6px}
+.app-row:last-child{border:none}
+.app-row:hover{background:var(--bg-hover)}
+.app-row.sel{background:var(--accent-soft)}
+.app-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:700;color:#fff;flex:0 0 34px}
+.app-meta{flex:1;min-width:0}
+.app-meta b{display:block;font-size:12.5px;font-weight:600}
+.app-meta span{font-size:10.5px;color:var(--text-3)}
+.app-size{font-size:11.5px;font-weight:600}
+.app-detail{padding:17px}
+.app-detail .ad-head{display:flex;align-items:center;gap:12px;margin-bottom:15px}
+.app-detail .ad-head .app-ico{width:44px;height:44px;flex:0 0 44px;font-size:19px}
+.app-detail h3{font-size:16px;font-weight:600}
+.leftover-total{font-size:11.5px;color:var(--text-2);margin-bottom:10px}
+.leftover-total b{font-size:17px;color:var(--text);font-weight:650}
+.leftover-file{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border);font-size:10.5px}
+.leftover-file:last-child{border:none}
+.leftover-file .lp{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ad-actions{margin-top:16px;display:flex;gap:9px}
+
+/* 优化 */
+.opt-item{padding:14px 16px;display:flex;align-items:center;gap:14px;border-bottom:.5px solid var(--border)}
+.opt-item:last-child{border:none}
+.opt-info{flex:1;min-width:0}
+.opt-info b{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.opt-info p{font-size:11px;color:var(--text-2);margin-top:4px;line-height:1.5}
+.switch{width:36px;height:21px;border-radius:12px;background:#cfd3da;position:relative;flex:0 0 36px;transition:background .18s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .18s}
+.switch.on{background:var(--accent)}
+.switch.on::after{transform:translateX(15px)}
+.opt-foot{padding:14px 16px;display:flex;align-items:center;gap:12px;background:var(--bg-inset);border-radius:0 0 12px 12px}
+.opt-foot .spacer{flex:1}
+
+/* 状态 HUD */
+.hud-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.hud{padding:14px 15px}
+.hud .h-top{display:flex;align-items:center;justify-content:space-between}
+.hud .h-label{font-size:10.5px;color:var(--text-2);display:flex;align-items:center;gap:6px}
+.hud .h-label svg{width:13px;height:13px}
+.hud .h-val{font-size:21px;font-weight:650;margin-top:8px;letter-spacing:-.02em}
+.hud .h-val small{font-size:11px;color:var(--text-2);font-weight:400}
+.spark{width:100%;height:38px;margin-top:6px}
+.hud.dual .h-val{font-size:17px}
+.alert-card{margin-top:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;
+  background:var(--review-bg);border:.5px solid #f2dcae;border-radius:10px}
+.alert-card svg{width:17px;height:17px;color:var(--review);flex:0 0 17px}
+.alert-card b{font-size:12px}
+.alert-card p{font-size:11px;color:#7a5c22;margin-top:2px}
+
+/* 设置 */
+.set-group{padding:4px 18px}
+.set-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:.5px solid var(--border)}
+.set-row:last-child{border:none}
+.set-info{flex:1;min-width:0}
+.set-info b{font-size:12.5px;font-weight:600;display:block}
+.set-info p{font-size:11px;color:var(--text-2);margin-top:3px;line-height:1.5}
+.protect-list{padding:14px 16px;font-size:11.5px;line-height:2}
+.protect-list code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg-inset);
+  padding:2px 6px;border-radius:4px;color:#444;display:inline-block;margin:2px 4px 2px 0}
+@media(max-width:920px){.health-grid,.mem-top,.analyze-wrap,.uninstall-wrap{grid-template-columns:1fr}
+  .quick-grid,.hud-grid{grid-template-columns:1fr 1fr}.sidebar{width:170px;flex-basis:170px}}
+</style>
+</head>
+<body>
+
+<!-- macOS 菜单栏 -->
+<div class="menubar">
+  <div class="menu-left">
+    <svg class="apple" viewBox="0 0 24 24" fill="#2b2b2e"><path d="M17.05 12.54c.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.63-1.71-3.2-1.73-1.36-.14-2.66.8-3.35.8-.69 0-1.76-.78-2.9-.76-1.49.02-2.87.87-3.64 2.2-1.55 2.69-.4 6.67 1.11 8.85.74 1.07 1.62 2.27 2.77 2.23 1.11-.04 1.53-.72 2.87-.72 1.34 0 1.72.72 2.9.7 1.2-.02 1.96-1.09 2.69-2.17.85-1.24 1.2-2.45 1.22-2.51-.03-.01-2.34-.9-2.36-3.58zM14.9 5.9c.61-.74 1.02-1.77.91-2.8-.88.04-1.95.59-2.58 1.32-.57.66-1.07 1.71-.94 2.72.98.08 1.99-.5 2.61-1.24z"/></svg>
+    <span class="menu-item strong">SnowSweep</span>
+    <span class="menu-item">文件</span><span class="menu-item">编辑</span><span class="menu-item">显示</span><span class="menu-item">窗口</span><span class="menu-item">帮助</span>
+  </div>
+  <div class="menu-right">
+    <span class="status-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>313 GB</span>
+    <span class="status-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 10v4M11 10v4M15 10v4"/></svg></span>
+    <span class="status-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M5 6l2 2M19 6l-2 2M4 13h3M17 13h3"/><circle cx="12" cy="14" r="4"/></svg></span>
+    <span class="status-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/><rect x="4" y="9" width="11" height="6" rx="1" fill="currentColor" stroke="none"/></svg>87%</span>
+    <span class="status-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg></span>
+    <span class="status-item">周一 17:23</span>
+    <span class="menu-dot"></span>
+  </div>
+</div>
+
+<!-- 应用窗口 -->
+<div class="window">
+  <div class="titlebar">
+    <div class="traffic red"><svg viewBox="0 0 8 8"><path d="M2 2l4 4M6 2L2 6" stroke="#9c1d17" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <div class="traffic yellow"><svg viewBox="0 0 8 8"><path d="M2 2l4 4M6 2L2 6" stroke="#9c6b04" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <div class="traffic green"><svg viewBox="0 0 8 8"><path d="M2 2l4 4M6 2L2 6" stroke="#166a18" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <div class="title-label">SnowSweep</div>
+  </div>
+  <div class="win-body">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="side-group-label">工作台</div>
+      <button class="nav-item active" data-module="dashboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>概览</button>
+      <button class="nav-item" data-module="clean">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M10 11v5M14 11v5"/></svg>清理<span class="nav-badge" id="navCleanBadge">8</span></button>
+      <button class="nav-item" data-module="analyze">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/></svg>空间分析</button>
+      <button class="nav-item" data-module="memory">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 10v4M11 10v4M15 10v4"/></svg>内存</button>
+      <div class="side-group-label">管理</div>
+      <button class="nav-item" data-module="uninstall">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>卸载</button>
+      <button class="nav-item" data-module="optimize">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.5"/></svg>优化</button>
+      <button class="nav-item" data-module="status">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h3l2-6 3 12 3-9 2 3h5"/></svg>机身状态</button>
+      <div class="sidebar-spacer"></div>
+      <button class="nav-item" data-module="settings">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.6V21h-4v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.6-1H3v-4h.1a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 001.9.3 1.7 1.7 0 001-1.6V3h4v.1a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 00-.3 1.9 1.7 1.7 0 001.6 1H21v4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>设置</button>
+      <div class="local-badge">
+        <div class="local-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><b>完全本地运行</b></div>
+        规则判定 · 端侧解释<br>零网络 · 零遥测
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="content" id="content">
+
+      <!-- 概览 -->
+      <section class="module active" data-module="dashboard">
+        <div class="page-head">
+          <div><div class="page-title">概览</div><div class="page-sub">你的 Mac 状态良好。以下是本次体检的关键指标。</div></div>
+          <button class="btn btn-primary" id="dashScan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>立即扫描</button>
+        </div>
+        <div class="health-grid">
+          <div class="card health-hero">
+            <div class="ring-wrap"><svg viewBox="0 0 104 104"><circle class="ring-bg" cx="52" cy="52" r="45"/><circle class="ring-fg" cx="52" cy="52" r="45"/></svg><div class="ring-num"><b>92</b><span>健康评分</span></div></div>
+            <div class="health-info"><h3>状态良好</h3><p>磁盘空间充足，内存压力正常。<br>发现 <b>42.6 GB</b> 可安全释放的空间，主要来自应用缓存与旧构建产物。</p>
+              <div class="health-actions"><button class="btn btn-primary btn-sm" data-goto="clean">查看清理建议</button><button class="btn btn-ghost btn-sm" data-goto="status">机身状态</button></div>
+            </div>
+          </div>
+          <div class="stat-grid">
+            <div class="card stat-card"><div class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>存储空间</div><div class="value">313<small> GB 可用</small></div><div class="bar"><i style="width:44%;background:var(--accent)"></i><i style="width:26%;background:#a9c7ef"></i><i style="width:18%;background:#d3e2f6"></i></div><div class="stat-foot">共 1 TB · 已用 687 GB</div></div>
+            <div class="card stat-card"><div class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 10v4M11 10v4M15 10v4"/></svg>内存压力</div><div class="value" style="color:var(--safe)">正常</div><div class="bar"><i style="width:38%;background:var(--safe)"></i></div><div class="stat-foot">9.1 / 18 GB 使用中</div></div>
+          </div>
+        </div>
+        <div class="sec-title">快捷入口</div>
+        <div class="quick-grid">
+          <button class="card quick" data-goto="clean"><span class="q-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M6 7l1 13h10l1-13"/></svg></span><span><b>清理垃圾</b><span>42.6 GB 可释放</span></span></button>
+          <button class="card quick" data-goto="analyze"><span class="q-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="5"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="10" width="8" height="11"/></svg></span><span><b>空间分析</b><span>查看全盘占用</span></span></button>
+          <button class="card quick" data-goto="memory"><span class="q-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h3l2-6 3 12 3-9 2 3h5"/></svg></span><span><b>内存分析</b><span>进程排行与压力</span></span></button>
+          <button class="card quick" data-goto="optimize"><span class="q-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="3.5"/></svg></span><span><b>系统优化</b><span>6 项可维护</span></span></button>
+        </div>
+        <div class="sec-title">最近活动 <span class="hint">全部操作均有本地日志，可追溯</span></div>
+        <div class="card activity">
+          <div class="activity-row"><i class="act-dot" style="background:var(--safe)"></i><span>清理完成 · 应用缓存与系统日志</span><span class="muted">释放 6.2 GB</span><span class="act-time">今天 17:30</span></div>
+          <div class="activity-row"><i class="act-dot" style="background:var(--accent)"></i><span>全盘扫描完成 · 扫描状态完整</span><span class="muted">1.02 TB 已索引</span><span class="act-time">今天 17:28</span></div>
+          <div class="activity-row"><i class="act-dot" style="background:var(--review)"></i><span>卸载残留检查 · Adobe Photoshop 2024</span><span class="muted">发现 2.1 GB</span><span class="act-time">昨天 21:14</span></div>
+          <div class="activity-row"><i class="act-dot" style="background:var(--unknown)"></i><span>规则库更新至 v0.1.0</span><span class="muted">+18 条规则</span><span class="act-time">11 月 21 日</span></div>
+        </div>
+      </section>
+
+      <!-- 清理 -->
+      <section class="module" data-module="clean">
+        <div class="page-head">
+          <div><div class="page-title">清理</div><div class="page-sub">每一项都经过四级判定，可展开查看依据与本地模型解释。默认只勾选安全项。</div></div>
+          <div style="display:flex;gap:9px"><button class="btn btn-ghost btn-sm" id="expandAll">展开全部</button><button class="btn btn-primary" id="cleanScan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>重新扫描</button></div>
+        </div>
+        <div class="card clean-summary">
+          <div><div class="clean-big" id="cleanTotal">42.6 <small>GB</small></div><div class="tiny muted" style="margin-top:2px">本次共发现可清理空间</div></div>
+          <div class="summary-sep"></div>
+          <div class="summary-meta">保护清单拦截 <b>11 项</b> · 需人工复核 <b>4 项</b><br>扫描状态 <b style="color:var(--safe)">完整</b> · 上次扫描 今天 17:28</div>
+          <div class="summary-meta" style="margin-left:auto;text-align:right">规则库 v0.1.0<br>本地模型已启用</div>
+          <div class="scan-progress" id="scanProgress"><i></i></div>
+        </div>
+        <div class="sec-title">扫描结果 <span class="hint">点击条目展开详情 · 黄色项默认不勾选</span></div>
+        <div class="clean-list" id="cleanList"></div>
+        <div class="protect-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg>以下项目受保护，永不清理：Ollama / LM Studio / HuggingFace 模型权重、Claude / Codex 会话记录、iOS 备份、凭证与系统关键目录。</div>
+        <div class="clean-foot"><div class="selected">已选 <b id="selCount">4</b> 项 · 预计释放 <b id="selSize">25.2 GB</b></div><div class="spacer"></div><button class="btn btn-ghost btn-sm" id="selAll">全选安全项</button><button class="btn btn-primary" id="doTrash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M6 7l1 13h10l1-13"/></svg>移到废纸篓</button></div>
+      </section>
+
+      <!-- 空间分析 -->
+      <section class="module" data-module="analyze">
+        <div class="page-head">
+          <div><div class="page-title">空间分析</div><div class="page-sub">全盘矩形树图，按占用面积排序。点击区块钻取目录；圆点表示风险等级。</div></div>
+          <button class="btn btn-ghost btn-sm" id="exportReport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>导出报告</button>
+        </div>
+        <div class="analyze-wrap">
+          <div class="card treemap-card">
+            <div class="tm-head"><div class="crumb" id="crumb"><b>Macintosh HD</b> › 全盘</div><button class="btn btn-ghost btn-sm" id="tmBack" style="display:none">返回上一级</button></div>
+            <div class="treemap" id="treemap"></div>
+            <div class="tm-legend"><span><i style="background:var(--safe)"></i>可安全清理</span><span><i style="background:var(--review)"></i>需人工复核</span><span><i style="background:var(--protected)"></i>受保护</span><span><i style="background:rgba(255,255,255,.5);border:1px solid #ccc"></i>普通数据</span></div>
+          </div>
+          <div>
+            <div class="card side-panel">
+              <h4>最大的文件</h4><div class="sub">按体积排序 · 点击可定位</div>
+              <div id="bigFiles"></div>
+            </div>
+            <div class="card disk-usage">
+              <div class="du-top"><span>磁盘使用</span><span class="muted">687 GB / 1 TB</span></div>
+              <div class="du-bar"><i style="width:26%;background:#5b8def"></i><i style="width:18%;background:#9b7fe8"></i><i style="width:15%;background:#5bbfa5"></i><i style="width:9%;background:#e0a33c"></i><i style="width:32%;background:#d9dde4"></i></div>
+              <div class="du-legend"><span><i style="background:#5b8def"></i>系统 178 GB</span><span><i style="background:#9b7fe8"></i>应用 124 GB</span><span><i style="background:#5bbfa5"></i>用户 103 GB</span><span><i style="background:#e0a33c"></i>缓存 62 GB</span><span><i style="background:#d9dde4"></i>可用 313 GB</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 内存 -->
+      <section class="module" data-module="memory">
+        <div class="page-head"><div><div class="page-title">内存分析</div><div class="page-sub">进程级内存占用、压缩与交换趋势。标记异常增长，帮助定位内存压力来源。</div></div><button class="btn btn-ghost btn-sm" id="memRefresh">刷新数据</button></div>
+        <div class="mem-top">
+          <div class="card mem-gauge">
+            <div class="mem-ring"><svg viewBox="0 0 118 118"><circle class="ring-bg" cx="59" cy="59" r="50" style="stroke-width:8"/><circle class="ring-fg" cx="59" cy="59" r="50" style="stroke-width:8"/></svg><div class="ring-num"><b>9.1<small style="font-size:12px"> GB</small></b><span>已使用 / 18 GB</span></div></div>
+            <div class="mem-info"><h3>内存压力正常</h3><p>物理内存 18 GB（Apple M3 Pro）<br>无交换写入，压缩内存处于健康范围。<br>最高占用进程：Xcode、Chrome。</p></div>
+          </div>
+          <div class="card mem-metrics" style="align-content:start">
+            <div class="card metric"><div class="l">物理内存</div><div class="v">9.1 <small>GB</small></div></div>
+            <div class="card metric"><div class="l">压缩内存</div><div class="v">1.4 <small>GB</small></div></div>
+            <div class="card metric"><div class="l">交换使用</div><div class="v">0 <small>KB</small></div></div>
+          </div>
+        </div>
+        <div class="chart-card card" style="margin-top:16px"><h4>内存压力 · 最近 60 秒</h4><div class="sub">绿区为健康范围，黄区表示压力上升</div><svg class="mem-chart" id="memChart" viewBox="0 0 600 132" preserveAspectRatio="none"></svg></div>
+        <div class="card proc-card" style="padding-top:6px">
+          <div class="proc-head"><span>进程</span><span>内存占用</span><span>CPU</span><span>趋势</span></div>
+          <div id="procList"></div>
+        </div>
+      </section>
+
+      <!-- 卸载 -->
+      <section class="module" data-module="uninstall">
+        <div class="page-head"><div><div class="page-title">卸载</div><div class="page-sub">卸载应用时一并清理偏好、支持文件与后台项。个人文档目录中的文件不会被当作残留。</div></div></div>
+        <div class="uninstall-wrap">
+          <div class="card app-list" id="appList"></div>
+          <div class="card app-detail" id="appDetail"></div>
+        </div>
+      </section>
+
+      <!-- 优化 -->
+      <section class="module" data-module="optimize">
+        <div class="page-head"><div><div class="page-title">优化</div><div class="page-sub">每项都可单独开关，执行前生成预览。不会修改受保护的系统数据库。</div></div></div>
+        <div class="card" id="optList"></div>
+        <div class="card opt-foot" style="margin-top:14px"><span class="tiny muted" id="optCount">已启用 5 项</span><div class="spacer"></div><button class="btn btn-ghost btn-sm" id="optPreview">预览操作</button><button class="btn btn-primary" id="optRun">运行已启用项</button></div>
+      </section>
+
+      <!-- 状态 -->
+      <section class="module" data-module="status">
+        <div class="page-head"><div><div class="page-title">机身状态</div><div class="page-sub">实时系统指标与 60 秒趋势。数据仅在本机读取，不上传。</div></div><span class="tiny muted" id="hudClock">每 2 秒刷新</span></div>
+        <div class="hud-grid" id="hudGrid"></div>
+        <div class="alert-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3L2 20h20L12 3zM12 9v5M12 17v.5"/></svg><div><b>1 项提示</b><p>Safari 与 Chrome 缓存较大，可在「清理」中复核后处理。系统温度正常。</p></div></div>
+      </section>
+
+      <!-- 设置 -->
+      <section class="module" data-module="settings">
+        <div class="page-head"><div><div class="page-title">设置</div><div class="page-sub">所有偏好只保存在本机。项目遵循 GPL-3.0，代码可审计。</div></div></div>
+        <div class="sec-title">菜单栏常驻</div>
+        <div class="card set-group" id="menuSettings"></div>
+        <div class="sec-title">安全与隐私</div>
+        <div class="card set-group">
+          <div class="set-row"><div class="set-info"><b>默认移到废纸篓</b><p>清理操作默认可恢复；永久删除需要二次确认。</p></div><div class="switch on" data-toggle></div></div>
+          <div class="set-row"><div class="set-info"><b>执行前 dry-run 预览</b><p>任何删除都先生成计划并逐项展示，不静默执行。</p></div><div class="switch on" data-toggle></div></div>
+          <div class="set-row"><div class="set-info"><b>本地模型解释</b><p>使用 macOS Foundation Models 为未知项生成说明。关闭后退回纯规则模式。</p></div><div class="switch on" data-toggle id="aiSwitch"></div></div>
+          <div class="set-row"><div class="set-info"><b>操作日志</b><p>记录路径、大小、风险与结果，保存在 ~/Library/Logs/snowSweep/。</p></div><div class="switch on" data-toggle></div></div>
+        </div>
+        <div class="sec-title">保护清单 <span class="hint">永不清理，优先级高于一切规则</span></div>
+        <div class="card protect-list"><code>~/.ollama/models</code><code>~/.lmstudio/models</code><code>~/.cache/huggingface</code><code>~/.claude/projects</code><code>~/.codex/sessions</code><code>~/Library/Application Support/MobileSync</code><code>~/.ssh</code><code>~/.gnupg</code><code>~/Library/Keychains</code><code>/System/*</code><code>/Library/Apple/*</code></div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+/* ============ 通用 ============ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const fmt=n=>n>=1024?(n/1024).toFixed(1)+' GB':n.toFixed(0)+' MB';
+const icon={
+  clean:'<path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  folder:'<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',
+  code:'<path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+  doc:'<path d="M6 3h8l4 4v14H6zM14 3v4h4"/>',
+  trash:'<path d="M4 7h16M6 7l1 13h10l1-13M10 11v5M14 11v5"/>',
+  lock:'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/>',
+  spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>'
+};
+const ico=(d,cls='')=>`<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+
+/* ============ 模块切换 ============ */
+function goto(name){
+  $$('.module').forEach(m=>m.classList.toggle('active',m.dataset.module===name));
+  $$('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.module===name));
+  $('#content').scrollTop=0;
+}
+$$('.nav-item').forEach(n=>n.addEventListener('click',()=>goto(n.dataset.module)));
+$$('[data-goto]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.goto)));
+
+/* ============ 清理模块 ============ */
+const cleanData=[
+  {id:'sys-cache',name:'系统缓存',path:'/Library/Caches',size:8200,risk:'safe',icon:icon.lock,
+   reason:'系统级缓存，可由系统自动重建。按策略需要单独确认，删除后首次使用可能略慢。',
+   files:[['/Library/Caches/com.apple.metadata',3200],['/Library/Caches/CloudKit',2600],['/Library/Caches/GeoServices',2400]],
+   ai:'这些是 macOS 为元数据和云服务建立的临时索引，属于可重建数据。删除不影响账号与已同步内容，但首次搜索会重新建立索引。',checked:true},
+  {id:'app-cache',name:'应用缓存',path:'~/Library/Caches',size:12400,risk:'safe',icon:icon.clean,
+   reason:'第三方应用缓存，应用会自动重建。不涉及书签、历史记录与登录状态。',
+   files:[['~/Library/Caches/Slack',3800],['~/Library/Caches/Spotify',3400],['~/Library/Caches/Dropbox',2900],['其他 14 个应用',2300]],
+   ai:'缓存由应用自己生成，删除后应用会在下次启动时重建。已跳过包含正在运行应用数据的目录。',checked:true},
+  {id:'xcode',name:'Xcode 构建缓存',path:'~/Library/Developer/Xcode/DerivedData',size:9800,risk:'review',icon:icon.code,
+   reason:'可由源码重新编译生成，但完整重建耗时较长。请确认近期是否需要快速构建。',
+   files:[['DerivedData/SnowApp-7f3a',5200],['DerivedData/LegacyKit-2b91',3100],['DerivedData/Other-9c10',1500]],
+   ai:'本地模型识别为 Xcode 编译中间产物（项目产物，非下载依赖）。重建不需要网络，但大型项目首次编译可能需要数分钟。建议保留正在开发的项目。',checked:false},
+  {id:'browser',name:'浏览器缓存',path:'Chrome · Safari · Firefox',size:3100,risk:'safe',icon:icon.globe,
+   reason:'仅临时缓存文件，不包含密码、 Cookie 或历史记录。',
+   files:[['Chrome/Default/Cache',1800],['Safari/Cache.db',900],['Firefox/cache2',400]],
+   ai:'浏览器临时缓存，删除后网页会重新下载资源。登录状态与历史记录不受影响。',checked:true},
+  {id:'leftover',name:'卸载残留',path:'已卸载应用的支持文件',size:2700,risk:'review',icon:icon.doc,
+   reason:'来自已卸载应用的偏好与支持文件。已排除个人文档目录，仍需确认归属。',
+   files:[['~/Library/Application Support/Adobe',1400],['~/Library/Preferences/com.oldapp.plist',300],['~/Library/Caches/com.legacy.tool',1000]],
+   ai:'这些路径的归属应用已不在「应用程序」目录中，判定为残留。建议确认是否还有对应的命令行工具依赖这些配置。',checked:false},
+  {id:'logs',name:'系统日志',path:'~/Library/Logs',size:1400,risk:'safe',icon:icon.doc,
+   reason:'历史运行日志，删除不影响系统与应用运行。',
+   files:[['~/Library/Logs/DiagnosticReports',800],['~/Library/Logs/AppStore',600]],
+   ai:'历史日志用于故障排查。如果没有正在跟进的问题，可以安全清理。',checked:true},
+  {id:'trash',name:'废纸篓',path:'~/.Trash',size:4900,risk:'review',icon:icon.trash,
+   reason:'用户已主动丢弃的项目。清空后无法从废纸篓恢复，需二次确认。',
+   files:[['旧版本 DMG 安装包',2600],['截图与临时文件',1500],['其他',800]],
+   ai:'废纸篓中的项目已由你主动丢弃。清空前建议快速浏览一次，确认没有误删内容。',checked:false},
+  {id:'installer',name:'旧安装包',path:'~/Downloads/*.dmg',size:3900,risk:'review',icon:icon.doc,
+   reason:'可能需要重新下载。请确认对应软件已经安装且不再需要安装包。',
+   files:[['~/Downloads/Xcode_16.dmg',2200],['~/Downloads/Figma.dmg',900],['~/Downloads/其他.pkg',800]],
+   ai:'这些是下载目录中的磁盘映像与安装包。删除不影响已安装的应用，但重装时需要重新下载。',checked:false},
+  {id:'protected',name:'模型权重与会话记录',path:'~/.ollama · ~/.claude · ~/.codex',size:28600,risk:'protected',icon:icon.lock,
+   reason:'命中保护清单：包含共享数据块与历史会话，持有时间久不代表可以清理。',
+   files:[['~/.ollama/models',18000],['~/.claude/projects',6200],['~/.codex/sessions',4400]],
+   ai:'本地模型权重与 AI 会话记录属于高价值数据，且可能包含共享数据块。已强制排除，不进入清理候选。',checked:false,locked:true}
+];
+function renderClean(){
+  $('#cleanList').innerHTML=cleanData.map((d,i)=>{
+    const size=d.size>=1024?(d.size/1024).toFixed(1)+' GB':d.size+' MB';
+    return `<div class="clean-item" data-i="${i}">
+      <div class="clean-main">
+        <div class="cb ${d.checked?'checked':''} ${d.locked?'locked':''}" data-cb="${i}"></div>
+        <div class="clean-icon">${ico(d.icon)}</div>
+        <div class="clean-name">${d.name}<span class="path">${d.path}</span></div>
+        <div class="clean-size">${size}</div>
+        <div class="clean-tag-wrap"><span class="tag ${d.risk}">${d.risk==='safe'?'可删':d.risk==='review'?'需审':'受保护'}</span></div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="clean-detail">
+        <div class="detail-reason"><b>判定依据：</b>${d.reason}</div>
+        <div class="file-rows">${d.files.map(f=>`<div class="file-row"><span class="fpath">${f[0]}</span><span class="fsize">${f[1]>=1024?(f[1]/1024).toFixed(1)+' GB':f[1]+' MB'}</span></div>`).join('')}</div>
+        <div class="ai-note">${ico(icon.spark)}<div><b>本地模型解释</b> · ${d.ai}</div></div>
+      </div></div>`;
+  }).join('');
+  $$('.clean-main').forEach(m=>m.addEventListener('click',e=>{
+    if(e.target.closest('[data-cb]'))return;
+    m.parentElement.classList.toggle('open');
+  }));
+  $$('[data-cb]').forEach(cb=>cb.addEventListener('click',e=>{
+    e.stopPropagation();const i=+cb.dataset.cb;
+    if(cleanData[i].locked)return;
+    cleanData[i].checked=!cleanData[i].checked;updateSel();
+  }));
+  updateSel();
+}
+function updateSel(){
+  const sel=cleanData.filter(d=>d.checked&&!d.locked);
+  const mb=sel.reduce((s,d)=>s+d.size,0);
+  $('#selCount').textContent=sel.length;
+  $('#selSize').textContent=mb>=1024?(mb/1024).toFixed(1)+' GB':mb+' MB';
+  $$('[data-cb]').forEach((cb,i)=>cb.classList.toggle('checked',!!cleanData[i].checked));
+  $('#navCleanBadge').textContent=cleanData.filter(d=>d.risk!=='protected').length;
+}
+renderClean();
+$('#expandAll').addEventListener('click',()=>{
+  const items=$$('.clean-item'),anyClosed=items.some(i=>!i.classList.contains('open'));
+  items.forEach(i=>i.classList.toggle('open',anyClosed));
+  $('#expandAll').textContent=anyClosed?'收起全部':'展开全部';
+});
+$('#selAll').addEventListener('click',()=>{cleanData.forEach(d=>{if(!d.locked&&d.risk==='safe')d.checked=true});updateSel()});
+$('#doTrash').addEventListener('click',()=>{
+  const n=cleanData.filter(d=>d.checked&&!d.locked).length;
+  if(!n){alert('请先勾选要清理的项目');return}
+  if(confirm('即将把 '+n+' 项移到废纸篓。操作会记录到本地日志。是否继续？')){
+    alert('模拟完成：已生成清理计划，'+n+' 项已移入废纸篓（原型演示，未执行真实文件操作）。');
+  }
+});
+function runScan(btn){
+  const p=$('#scanProgress');p.classList.add('show');const bar=$('i',p);bar.style.width='0%';
+  btn.disabled=true;let v=0;
+  const t=setInterval(()=>{v+=Math.random()*22;bar.style.width=Math.min(v,100)+'%';
+    if(v>=100){clearInterval(t);p.classList.remove('show');btn.disabled=false;
+      $('#cleanTotal').innerHTML='42.6 <small>GB</small>';}},180);
+}
+$('#cleanScan').addEventListener('click',e=>runScan(e.currentTarget));
+$('#dashScan').addEventListener('click',e=>{goto('clean');runScan($('#cleanScan'))});
+
+/* ============ 空间分析 treemap ============ */
+const tmRoot=[
+  {n:'用户目录',v:128,x:0,y:0,w:45,h:52,c:'#4a7fd4',risk:'',bg:['用户目录 · 128 GB',[['文稿',42],['图片',31],['视频',28],['音乐',18],['其他',9]]]},
+  {n:'系统数据',v:84,x:45,y:0,w:30,h:30,c:'#7c8798',risk:'',bg:['系统数据 · 84 GB',[['macOS 系统',56],['系统缓存',18],['其他',10]]]},
+  {n:'应用程序',v:68,x:75,y:0,w:25,h:52,c:'#8b6fd6',risk:'',bg:['应用程序 · 68 GB',[['Xcode',22],['Adobe 套件',18],['Chrome',6],['其他应用',22]]]},
+  {n:'开发缓存',v:62,x:45,y:30,w:30,h:22,c:'#e0a33c',risk:'review',bg:['开发缓存 · 62 GB',[['Xcode DerivedData',31],['node_modules',18],['CocoaPods',8],['其他',5]]]},
+  {n:'媒体文件',v:78,x:0,y:52,w:28,h:48,c:'#4fa8a0',risk:'',bg:['媒体文件 · 78 GB',[['视频',40],['照片图库',26],['音频',12]]]},
+  {n:'缓存垃圾',v:42,x:28,y:52,w:22,h:48,c:'#3fa87a',risk:'safe',bg:['缓存垃圾 · 42 GB',[['应用缓存',24],['浏览器缓存',10],['日志',8]]]},
+  {n:'文档',v:55,x:50,y:52,w:25,h:48,c:'#5f93e0',risk:'',bg:['文档 · 55 GB',[['工作文档',30],['PDF',14],['归档',11]]]},
+  {n:'其他',v:30,x:75,y:52,w:25,h:48,c:'#a7adb8',risk:'',bg:['其他 · 30 GB',[['下载',16],['未知类别',14]]]}
+];
+function renderTree(data){
+  $('#treemap').innerHTML=data.map(d=>`<div class="tm-cell" style="left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%;background:${d.c}" data-n="${d.n}">
+    ${d.risk?`<i class="tm-tag" style="background:var(--${d.risk})"></i>`:''}
+    <div class="tm-name">${d.n}</div><div class="tm-size">${d.v} GB · ${(d.v/1024*100).toFixed(0)}%</div></div>`).join('');
+  $$('.tm-cell').forEach(c=>c.addEventListener('click',()=>{
+    const d=data.find(x=>x.n===c.dataset.n);
+    $('#crumb').innerHTML=`<b>Macintosh HD</b> › ${d.bg[0]}`;$('#tmBack').style.display='inline-flex';
+    renderTree(d.bg[1].map((it,i)=>({n:it[0],v:it[1],x:(i%2)*50,y:Math.floor(i/2)*25,w:50,h:25,c:d.c,risk:d.risk,bg:[it[0]+' · '+it[1]+' GB',[]]})));
+  }));
+}
+renderTree(tmRoot);
+$('#tmBack').addEventListener('click',()=>{renderTree(tmRoot);$('#crumb').innerHTML='<b>Macintosh HD</b> › 全盘';$('#tmBack').style.display='none'});
+const bigFiles=[['Xcode_16.dmg','2.2 GB','下载',icon.doc],['photoshop_backup.psb','1.8 GB','文稿',icon.doc],['Screen Recording.mov','1.4 GB','桌面',icon.globe],['node_modules','980 MB','开发',icon.code],['OldProject.xcarchive','860 MB','开发',icon.code]];
+$('#bigFiles').innerHTML=bigFiles.map(f=>`<div class="bigfile"><span class="bf-icon">${ico(f[3])}</span><span class="bf-info"><b>${f[0]}</b><span>${f[2]}</span></span><span class="bf-size">${f[1]}</span></div>`).join('');
+$('#exportReport').addEventListener('click',()=>alert('已生成扫描报告（原型演示）。真实版本将导出包含路径、大小、风险等级与解释的 JSON / CSV。'));
+
+/* ============ 内存 ============ */
+const procs=[['Xcode',3200,'#8b6fd6',18,'up'],['Google Chrome',2400,'#e0533f',12,'up'],['Adobe Photoshop',1500,'#3fa87a',6,'flat'],['Cursor',980,'#5f93e0',4,'up'],['sfmon',640,'#888',2,'flat'],['WindowServer',420,'#e0a33c',3,'down'],['其他进程',1980,'#a7adb8',9,'flat']];
+function renderProc(){
+  $('#procList').innerHTML=procs.map(p=>`<div class="proc-row"><div class="proc-name"><i class="pdot" style="background:${p[2]}"></i><span>${p[0]}</span></div><span>${fmt(p[1])}</span><span>${p[3]}%</span><span class="trend ${p[4]}">${p[4]==='up'?'↑ 增长':p[4]==='down'?'↓ 下降':'— 平稳'}</span></div>`).join('');
+}
+renderProc();
+function drawMemChart(){
+  const pts=[];let v=42;
+  for(let i=0;i<60;i++){v+= (Math.random()-.47)*7;v=Math.max(18,Math.min(72,v));pts.push(v)}
+  const w=600,h=132,step=w/59;
+  const path=pts.map((p,i)=>`${i?'L':'M'}${(i*step).toFixed(1)},${(h-p).toFixed(1)}`).join(' ');
+  $('#memChart').innerHTML=`<rect x="0" y="${h*0.28}" width="${w}" height="${h*0.72}" fill="#eaf6ef"/>
+    <line x1="0" y1="${h*0.28}" x2="${w}" y2="${h*0.28}" stroke="#f0d9a6" stroke-dasharray="4 4"/>
+    <path d="${path} L${w},${h} L0,${h} Z" fill="rgba(10,124,255,.10)"/>
+    <path d="${path}" fill="none" stroke="#0a7cff" stroke-width="2"/>`
+    +[0,15,30,45,60].map(i=>`<text x="${i*step}" y="128" font-size="9" fill="#9a9ea6" text-anchor="middle">-${60-i}s</text>`).join('');
+}
+drawMemChart();
+$('#memRefresh').addEventListener('click',()=>{drawMemChart();procs.forEach(p=>p[1]=Math.max(200,p[1]+(Math.random()-.5)*300|0));renderProc()});
+
+/* ============ 卸载 ============ */
+const apps=[
+  {n:'Xcode',s:'7.8 GB',last:'今天',left:3.2,color:'#4a7fd4',letter:'X',items:[['~/Library/Developer/Xcode/DerivedData','1.8 GB'],['~/Library/Application Support/Xcode','900 MB'],['~/Library/Preferences/com.apple.dt.Xcode.plist','500 MB']]},
+  {n:'Adobe Photoshop 2024',s:'4.2 GB',last:'3 个月前',left:2.1,color:'#1d1d1f',letter:'Ps',items:[['~/Library/Application Support/Adobe','1.4 GB'],['~/Library/Preferences/com.adobe.Photoshop.plist','300 MB'],['~/Library/Caches/com.adobe.Photoshop','400 MB']]},
+  {n:'Google Chrome',s:'1.1 GB',last:'今天',left:0.6,color:'#e0533f',letter:'C',items:[['~/Library/Caches/com.google.Chrome','400 MB'],['~/Library/Application Support/Google/Chrome','200 MB']]},
+  {n:'Visual Studio Code',s:'680 MB',last:'昨天',left:0.3,color:'#2f8fe0',letter:'V',items:[['~/Library/Application Support/Code','200 MB'],['~/Library/Caches/com.microsoft.VSCode','100 MB']]},
+  {n:'Legacy Tool',s:'340 MB',last:'8 个月前',left:0.9,color:'#8b6fd6',letter:'L',items:[['~/Library/Application Support/LegacyTool','600 MB'],['~/Library/Preferences/com.legacy.tool.plist','300 MB']]}
+];
+let selApp=0;
+function renderApps(){
+  $('#appList').innerHTML=apps.map((a,i)=>`<div class="app-row ${i===selApp?'sel':''}" data-a="${i}"><span class="app-ico" style="background:${a.color}">${a.letter}</span><span class="app-meta"><b>${a.n}</b><span>上次使用 ${a.last}</span></span><span class="app-size">${a.s}</span></div>`).join('');
+  $$('[data-a]').forEach(r=>r.addEventListener('click',()=>{selApp=+r.dataset.a;renderApps();renderAppDetail()}));
+}
+function renderAppDetail(){
+  const a=apps[selApp];
+  $('#appDetail').innerHTML=`<div class="ad-head"><span class="app-ico" style="background:${a.color}">${a.letter}</span><div><h3>${a.n}</h3><div class="tiny muted">应用本体 ${a.s}</div></div></div>
+    <div class="leftover-total">可一并清理的残留 <b>${a.left.toFixed(1)} GB</b></div>
+    ${a.items.map(it=>`<div class="leftover-file"><span class="lp">${it[0]}</span><span>${it[1]}</span></div>`).join('')}
+    <div class="ai-note" style="margin-top:13px">${ico(icon.spark)}<div>已排除个人文档与音乐目录。带系统扩展或驱动的软件会提示使用厂商卸载器。</div></div>
+    <div class="ad-actions"><button class="btn btn-danger btn-sm" id="uninstallBtn">彻底卸载</button><button class="btn btn-ghost btn-sm" id="clearDataBtn">仅清理数据</button></div>`;
+  $('#uninstallBtn').addEventListener('click',()=>alert('原型演示：将生成卸载计划并先预览，应用本体默认移入废纸篓。'));
+  $('#clearDataBtn').addEventListener('click',()=>alert('原型演示：仅清理应用数据，保留应用本体。'));
+}
+renderApps();renderAppDetail();
+
+/* ============ 优化 ============ */
+const opts=[
+  {n:'刷新 DNS 缓存',d:'清理过期 DNS 解析记录，解决网络访问异常。',on:true,tag:'safe'},
+  {n:'重建 Spotlight 索引',d:'重建系统搜索索引，修复搜索结果不全。执行后索引恢复需要时间。',on:false,tag:'review'},
+  {n:'刷新 Quick Look 缩略图缓存',d:'清除预览缩略图缓存，解决预览不更新的问题。',on:true,tag:'safe'},
+  {n:'清理崩溃与诊断日志',d:'移除历史崩溃报告，不影响系统运行。',on:true,tag:'safe'},
+  {n:'重建 Launch Services',d:'刷新应用注册信息，修复「打开方式」异常。',on:false,tag:'review'},
+  {n:'审查登录项与后台项',d:'只做检查与引导跳转，不直接修改受保护的系统数据库。',on:true,tag:'safe'}
+];
+function renderOpts(){
+  $('#optList').innerHTML=opts.map((o,i)=>`<div class="opt-item"><div class="switch ${o.on?'on':''}" data-o="${i}"></div><div class="opt-info"><b>${o.n} <span class="tag ${o.tag}">${o.tag==='safe'?'常规':'需确认'}</span></b><p>${o.d}</p></div></div>`).join('');
+  $$('[data-o]').forEach(s=>s.addEventListener('click',()=>{const i=+s.dataset.o;opts[i].on=!opts[i].on;renderOpts()}));
+  $('#optCount').textContent=`已启用 ${opts.filter(o=>o.on).length} 项`;
+}
+renderOpts();
+$('#optPreview').addEventListener('click',()=>alert('dry-run 预览：共 '+opts.filter(o=>o.on).length+' 项操作。原型演示，未执行任何变更。'));
+$('#optRun').addEventListener('click',()=>{if(!opts.some(o=>o.on)){alert('请先启用至少一项');return}alert('原型演示：优化操作逐项执行并记录到操作日志。')});
+
+/* ============ 状态 HUD ============ */
+const hud=[
+  {n:'CPU',v:'18',u:'%',c:'#0a7cff',ico:'<path d="M12 3v3M5 6l2 2M19 6l-2 2M4 13h3M17 13h3"/><circle cx="12" cy="14" r="4"/>'},
+  {n:'GPU',v:'12',u:'%',c:'#8b6fd6',ico:'<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/>'},
+  {n:'内存',v:'9.1',u:'GB',c:'#22a06b',ico:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 10v4M11 10v4M15 10v4"/>'},
+  {n:'磁盘活动',v:'24',u:'MB/s',c:'#e0a33c',dual:1,ico:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/>'},
+  {n:'网络',v:'1.2',u:'MB/s',c:'#0a7cff',dual:1,ico:'<path d="M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0"/>'},
+  {n:'电池',v:'87',u:'%',c:'#22a06b',ico:'<rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/>'},
+  {n:'CPU 温度',v:'46',u:'°C',c:'#e08a00',ico:'<path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/>'},
+  {n:'风扇',v:'1820',u:'RPM',c:'#7c8798',dual:1,ico:'<circle cx="12" cy="12" r="2"/><path d="M12 10c-3-2-2-6 1-6 2 0 3 3 1 5M14 12c2 3 6 2 6-1 0-2-3-3-5-1M12 14c3 2 2 6-1 6-2 0-3-3-1-5M10 12c-2-3-6-2-6 1 0 2 3 3 5 1"/>'}
+];
+function sparkPath(color,seed){
+  let v=30+Math.random()*20;const pts=[];
+  for(let i=0;i<28;i++){v+=(Math.random()-.5)*14;v=Math.max(10,Math.min(50,v));pts.push(`${i},${52-v}`)}
+  const d=pts.map((p,i)=>`${i?'L':'M'}${p.replace(',',',')}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 28 52" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="${color}" stroke-width="1.8" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function renderHud(){
+  $('#hudGrid').innerHTML=hud.map(h=>`<div class="card hud ${h.dual?'dual':''}"><div class="h-top"><div class="h-label">${ico(h.ico)}${h.n}</div></div><div class="h-val">${h.v} <small>${h.u}</small></div>${sparkPath(h.c)}</div>`).join('');
+}
+renderHud();
+let tick=0;setInterval(()=>{if(!$('[data-module="status"]').classList.contains('active'))return;
+  tick++;hud[0].v=(14+Math.random()*12|0)+'';hud[1].v=(8+Math.random()*10|0)+'';
+  hud[2].v=(8.8+Math.random()*.6).toFixed(1);hud[6].v=(44+Math.random()*4|0)+'';
+  renderHud();$('#hudClock').textContent='已刷新 '+tick+' 次 · 每 2 秒';},2000);
+
+/* ============ 设置 ============ */
+const menuOpts=[['存储空间','在菜单栏显示可用空间',true],['内存占用','显示已用内存与压力',true],['CPU 负载','显示实时 CPU 使用率',true],['网络活动','显示上下行速率',false],['电池状态','显示电量与剩余时间',true],['告警角标','发现可清理项时显示提示点',true]];
+$('#menuSettings').innerHTML=menuOpts.map(o=>`<div class="set-row"><div class="set-info"><b>${o[0]}</b><p>${o[1]}</p></div><div class="switch ${o[2]?'on':''}" data-toggle></div></div>`).join('');
+$$('[data-toggle]').forEach(s=>s.addEventListener('click',()=>s.classList.toggle('on')));
+$('#aiSwitch').addEventListener('click',()=>{const off=!$('#aiSwitch').classList.contains('on');setTimeout(()=>alert(off?'已关闭本地模型解释，退回纯规则模式。':'已启用本地模型解释（Foundation Models，完全端侧）。'),0)});
+</script>
+</body>
+</html>

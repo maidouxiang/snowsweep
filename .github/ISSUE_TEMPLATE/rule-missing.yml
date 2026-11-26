@@ -1,0 +1,85 @@
+name: 规则未命中
+description: 某个应用/目录本应可以清理或应被保护，但规则库没有命中。
+title: "[rule-missing] "
+labels: ["rule-missing", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这是**规则补充**入口，不是漏洞报告。请用 `~/...` 模板代替真实路径，
+        不要粘贴 `/Users/<你的名字>` 开头的绝对路径，不要上传截图。
+
+  - type: input
+    id: app-name
+    attributes:
+      label: 应用中文名
+      placeholder: 例如：某视频剪辑应用
+    validations:
+      required: true
+
+  - type: input
+    id: bundle-id
+    attributes:
+      label: Bundle ID（可选）
+      placeholder: com.example.app
+      description: 不知道可留空，但建议填；这是最有价值的线索。
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 问题类型
+      options:
+        - 应可清理但未命中（false negative）
+        - 不应清理但被命中（false positive）
+        - 应受保护但未列入保护路径
+        - 已卸载但残留未被识别
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: path-pattern
+    attributes:
+      label: 目录模式（脱敏）
+      description: 用 `<app-id>` / `<hash>` / `<name>` 占位，只保留标准目录层级。
+      placeholder: |
+        ~/Library/Caches/<app-id>/
+        ~/Library/Application Support/<app-id>/<hash>/
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: 体积区间
+      options:
+        - "<10MB"
+        - "10-100MB"
+        - "100MB-1GB"
+        - "1-5GB"
+        - ">5GB"
+        - "不确定"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 为什么应当可清理 / 应当保护
+      description: 附厂商公开文档、卸载后重建等可验证依据。没有依据也可以提交，但规则会停在 review 分级。
+    validations:
+      required: true
+
+  - type: textarea
+    id: trial
+    attributes:
+      label: 试扫结果（可选）
+      description: 若已在本地规则注册表试扫，请填根目录、项数、体积。
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 隐私确认
+      options:
+        - label: 我提交的是目录模式，不含真实用户名、文件名、截图或文件内容
+          required: true

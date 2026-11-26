@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安全问题 / 私密报告
+    url: https://github.com/maidouxiang/snowsweep/security/advisories/new
+    about: 误删、保护路径绕过、隐私泄露等请走私密渠道，不要开公开 issue。
+  - name: 讨论区
+    url: https://github.com/maidouxiang/snowsweep/discussions
+    about: 使用问题、想法、投票请走 Discussions；规则与样本请用上面的表单。

@@ -1,0 +1,48 @@
+雪 / SnowSweep
+Copyright (C) 2026 SnowSweep contributors
+
+This project is licensed under the GNU General Public License v3.0.
+See LICENSE for the full text.
+
+---
+
+## 第三方组件与资产
+
+### Mole CLI
+
+- 来源：https://github.com/tw93/Mole
+- 许可：GPL-3.0
+- 用途：V0.9.x 阶段的清理执行兼容基座（通过 CLI 适配层调用）。
+- 义务：本项目以 GPL-3.0 分发。若分发包含 Mole 的二进制或衍生作品，
+  必须同时提供对应源码的获取方式（见本项目 Releases 中的源码标签）。
+- 说明：Mole 为可选依赖。未安装、版本过低或探测失败时，本项目降级到
+  内置 NativeScanner，判定逻辑不受影响。
+
+### Apple 系统框架与模型
+
+- Foundation、SwiftUI、AppKit、SystemConfiguration、IOBluetooth 等为
+  macOS 系统框架，随系统提供，不随本仓库分发。
+- Apple Foundation Models 由系统提供，不随本仓库分发。
+
+### 本地模型权重
+
+- 本项目**不随仓库分发任何模型权重**（`*.gguf`、`*.safetensors`、`*.mlx`）。
+- 若用户自行放置本地模型，需自行遵守该模型自身的许可条款。
+- 仓库内不含模型文件；相关说明仅描述放置路径与加载方式。
+
+### 图标与视觉资产
+
+- `Assets/` 中的应用图标、雪花图形为项目自绘资产，随本项目以 GPL-3.0 分发。
+- 界面使用的中文字体为系统字体，不随仓库分发字体文件。
+- 若后续引入第三方字体或图标，必须在此处补充其许可（如 SIL OFL 1.1）。
+
+### 测试夹具
+
+- `Tests/` 与 `samples/fixtures/` 中的样本为合成数据或已二次脱敏的最小夹具。
+- 不含真实用户文件、真实路径、截图或个人信息。
+
+---
+
+## 联系方式
+
+安全问题请勿开公开 issue，按 SECURITY.md 的私密渠道报告。

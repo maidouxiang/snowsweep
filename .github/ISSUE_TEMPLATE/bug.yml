@@ -1,0 +1,83 @@
+name: 缺陷报告
+description: 报告可以复现的问题（崩溃、判定错误、界面异常）。请勿粘贴原始路径与截图。
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **提交前请确认**：本表单不接受真实绝对路径、用户名、截图、崩溃日志原文。
+        涉及隐私或安全的内容请走 [SECURITY.md](../blob/main/SECURITY.md) 的私密渠道，不要开公开 issue。
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: 版本
+      description: 应用内“设置 → 关于”显示的版本号
+      options:
+        - v0.9.32
+        - 更早版本（请在下方说明）
+        - 自行构建的版本
+    validations:
+      required: true
+
+  - type: dropdown
+    id: macos
+    attributes:
+      label: macOS 版本
+      options:
+        - macOS 26
+        - macOS 27
+        - 其他（请在下方说明）
+    validations:
+      required: true
+
+  - type: input
+    id: arch
+    attributes:
+      label: 芯片架构
+      placeholder: Apple Silicon (arm64) / Intel (x86_64)
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 现象
+      description: 发生了什么。请用应用标识（如“某聊天应用缓存”）代替真实路径与文件名。
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 打开 ...
+        2. 输入 ...
+        3. 看到 ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 其他信息
+      description: 是否授予了磁盘访问权限？是否安装了 Mole？可附脱敏后的 `xue.sample/v1` JSON。
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 隐私确认
+      options:
+        - label: 我已确认本表单不含真实绝对路径、用户名、截图、聊天记录或密钥
+          required: true
+        - label: 我理解公开 issue 的内容对所有人可见
+          required: true
