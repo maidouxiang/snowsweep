@@ -31,3 +31,6 @@ samples/inbox/
 samples/raw/
 docs/internal/
 docs/images/historical/
+
+# 开发期规则备份，不入公开仓库
+*.bak-*
