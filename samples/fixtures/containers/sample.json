@@ -1,0 +1,59 @@
+{
+  "app" : {
+    "build" : "0.9.33",
+    "bundle_id" : "com.selfuse.xue",
+    "version" : "0.9.33"
+  },
+  "consent" : {
+    "public_sample" : true,
+    "raw_paths" : false,
+    "sample_license" : "CC0-1.0",
+    "screenshots" : false
+  },
+  "created_at" : "2026-11-26T19:33:05Z",
+  "host" : {
+    "arch" : "arm64",
+    "locale" : "zh_CN",
+    "mac_os" : "27.2.1"
+  },
+  "intent" : {
+    "category" : "containers",
+    "query_redacted" : "某个聊天工具占了很大空间"
+  },
+  "observation" : {
+    "bytes_bucket" : "1-5GB",
+    "coverage" : 0.62,
+    "file_count_bucket" : "1000+",
+    "scope" : [
+      "~/Library/Containers/com.example.chat/<name>/Library/Caches/<hash>",
+      "~/Library/Containers/com.example.chat/<name>/Library/Application Support/com.example.chat/<name>/<name>"
+    ]
+  },
+  "paths" : [
+    {
+      "pattern" : "~/Library/Containers/com.example.chat/<name>/Library/Caches/<hash>",
+      "protected" : false,
+      "role" : "observed"
+    },
+    {
+      "pattern" : "~/Library/Containers/com.example.chat/<name>/Library/Application Support/com.example.chat/<name>/<name>",
+      "protected" : false,
+      "role" : "observed"
+    }
+  ],
+  "rules" : {
+    "sha256" : "1782cb37997ea672e368cf31989617e43b1d4a42fd2ffe01cbc11adcf75c7e5a",
+    "version" : "0.5.2"
+  },
+  "sample_id" : "D7DEBD15-50C8-494E-BE50-13FF570B6D58",
+  "schema" : "xue.sample/v1",
+  "verdict" : {
+    "closest_rules" : [
+
+    ],
+    "evidence" : [
+      "合成夹具：用于验证导出器行为，不含真实用户数据。"
+    ],
+    "result" : "unknown"
+  }
+}

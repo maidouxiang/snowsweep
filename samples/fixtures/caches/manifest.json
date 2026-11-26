@@ -1,0 +1,23 @@
+{
+  "created_at" : "2026-11-26T19:33:05Z",
+  "files" : [
+    {
+      "bytes" : 1422,
+      "name" : "sample.json",
+      "sha256" : "f822dd1e808717a2b451bfaf13b1cfbad028f0e5668c39245e962d1a47a76cbc"
+    },
+    {
+      "bytes" : 242,
+      "name" : "scan-summary.json",
+      "sha256" : "81f4b3166c82cf569cd823f2264cda5886f162754853fe06a7364a1d1063aa48"
+    },
+    {
+      "bytes" : 844,
+      "name" : "README.txt",
+      "sha256" : "6a1c9c1938149fda5416c5a4c5d0e0f1000a982c3199667b987ecc0ee6c29ff0"
+    }
+  ],
+  "license" : "CC0-1.0",
+  "sample_id" : "332637A7-F693-49B0-A95E-62B907965361",
+  "schema" : "xue.sample/v1"
+}

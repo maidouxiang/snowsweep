@@ -1,0 +1,59 @@
+{
+  "app" : {
+    "build" : "0.9.33",
+    "bundle_id" : "com.selfuse.xue",
+    "version" : "0.9.33"
+  },
+  "consent" : {
+    "public_sample" : true,
+    "raw_paths" : false,
+    "sample_license" : "CC0-1.0",
+    "screenshots" : false
+  },
+  "created_at" : "2026-11-26T19:33:05Z",
+  "host" : {
+    "arch" : "arm64",
+    "locale" : "zh_CN",
+    "mac_os" : "27.2.1"
+  },
+  "intent" : {
+    "category" : "caches",
+    "query_redacted" : "清理某个应用更新留下的缓存"
+  },
+  "observation" : {
+    "bytes_bucket" : "100MB-1GB",
+    "coverage" : 0.87,
+    "file_count_bucket" : "101-1000",
+    "scope" : [
+      "~/Library/Caches/com.example.editor/<name>",
+      "~/Library/Caches/com.example.editor/<name>/<name>.tmp"
+    ]
+  },
+  "paths" : [
+    {
+      "pattern" : "~/Library/Caches/com.example.editor/<name>",
+      "protected" : false,
+      "role" : "observed"
+    },
+    {
+      "pattern" : "~/Library/Caches/com.example.editor/<name>/<name>.tmp",
+      "protected" : false,
+      "role" : "observed"
+    }
+  ],
+  "rules" : {
+    "sha256" : "1782cb37997ea672e368cf31989617e43b1d4a42fd2ffe01cbc11adcf75c7e5a",
+    "version" : "0.5.2"
+  },
+  "sample_id" : "332637A7-F693-49B0-A95E-62B907965361",
+  "schema" : "xue.sample/v1",
+  "verdict" : {
+    "closest_rules" : [
+
+    ],
+    "evidence" : [
+      "合成夹具：用于验证导出器行为，不含真实用户数据。"
+    ],
+    "result" : "unknown"
+  }
+}

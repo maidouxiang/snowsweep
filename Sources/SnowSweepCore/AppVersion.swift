@@ -21,13 +21,12 @@ public struct AppVersion: Codable, Hashable, Sendable {
         return "\(display)（\(devTag)）"
     }
 
-    /// V0.9.32 雪敛：主窗口关闭后菜单栏快捷面板不再沿用已释放的空快照；
-    /// 每次展开立即取数，展开期间定时刷新，并接入物理接口每秒上下行速率。
-    /// 不新增删除能力，不改 4B 模型。
+    /// V0.9.33 雪签：新增样本导出器（`xue.sample/v1`），在本机完成路径模板化与
+    /// 文本脱敏，只输出区间与占位符。不新增删除能力，不改 4B 模型，不联网。
     public static let current = AppVersion(
-        number: "0.9.32",
-        codeName: "雪敛",
-        stage: "菜单栏实时面板与上下行网速",
+        number: "0.9.33",
+        codeName: "雪签",
+        stage: "样本导出与脱敏",
         devTag: nil
     )
 }

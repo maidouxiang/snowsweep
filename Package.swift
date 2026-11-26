@@ -12,7 +12,8 @@ let package = Package(
         .executable(name: "SoakTest", targets: ["SoakTest"]),
         .executable(name: "FamilyScan", targets: ["FamilyScan"]),
         .executable(name: "ScannerService", targets: ["ScannerService"]),
-        .executable(name: "ModelHost", targets: ["ModelHost"])
+        .executable(name: "ModelHost", targets: ["ModelHost"]),
+        .executable(name: "SampleExport", targets: ["SampleExport"])
     ],
     targets: [
         .target(name: "SnowSweepCore", resources: [
@@ -26,6 +27,7 @@ let package = Package(
         .executableTarget(name: "FamilyScan", dependencies: ["SnowSweepCore"]),
         .executableTarget(name: "ScannerService", dependencies: ["SnowSweepCore"]),
         .executableTarget(name: "ModelHost", dependencies: ["SnowSweepCore"]),
+        .executableTarget(name: "SampleExport", dependencies: ["SnowSweepCore"]),
         .testTarget(name: "SnowSweepCoreTests", dependencies: ["SnowSweepCore"])
     ]
 )

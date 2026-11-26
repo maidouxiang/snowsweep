@@ -35,7 +35,7 @@ xue-sample-<uuid>.zip
   "schema": "xue.sample/v1",
   "sample_id": "uuid",
   "created_at": "2026-11-27T10:00:00+08:00",
-  "app":    { "version": "0.9.32", "build": "0.9.32", "bundle_id": "com.selfuse.xue" },
+  "app":    { "version": "0.9.33", "build": "0.9.33", "bundle_id": "com.selfuse.xue" },
   "host":   { "macos": "26.x", "arch": "arm64", "locale": "zh_CN" },
   "rules":  { "version": "0.5.2", "sha256": "…" },
   "intent": { "category": "unknown", "query_redacted": "清理某个应用缓存" },
@@ -91,7 +91,28 @@ xue-sample-<uuid>.zip
 
 ## 七、导出工具
 
-正式导出器随 **V0.9.33** 发布（只加导出与脱敏，不改判定逻辑）。在那之前，样本请按上面的 schema 手工整理——字段不多，照抄即可。
+导出器从 **V0.9.33** 起随源码提供，命令行目标 `SampleExport`。它只读输入、脱敏、写包，**不扫描、不删除、不联网**。
+
+```bash
+# 1. 把应用里导出的“规则缺失报告”（.json）转成脱敏样本
+swift run SampleExport --case 雪-规则缺失-xxxxxxxx.json --out ~/Desktop/雪样本
+
+# 2. 生成三份合成夹具（只用 example 假路径，不碰本机数据），用于验证导出器本身
+swift run SampleExport --fixture --out ~/Desktop/雪样本示例
+```
+
+输出目录结构就是上面的四件套；加 `--no-zip` 可只写目录不打 zip。
+
+`--case` 模式会做的事：
+
+- `/Users/<你的名字>` 与其它绝对路径 → `~/...` 模板
+- 应用标识（`com.vendor.app`）与系统目录（`Library/Caches` 等）保留，其余层级 → `<name>` / `<hash>` / `<id>`
+- 用户原话先脱敏再截断；含路径或残留长编号的原话直接不导出，只留 `category`
+- 数量与体积只写区间
+
+`samples/fixtures/` 下有三份合成夹具（缓存 / 容器 / 文稿），可以直接对照字段，也可以拿去写测试。
+
+导出器不替你判断"这份样本能不能公开"——**上传前请自己再读一遍 `sample.json`**。
 
 ## 八、维护者怎么用样本
 

@@ -1,0 +1,9 @@
+{
+  "bytes_bucket" : "1-100MB",
+  "coverage" : 0.35,
+  "file_count_bucket" : "11-100",
+  "result" : "unknown",
+  "sample_id" : "DE1D304C-0933-49AF-B364-805F677B4947",
+  "scanned_at" : "2026-11-26T19:33:05Z",
+  "schema" : "xue.sample/v1"
+}
