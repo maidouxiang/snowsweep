@@ -66,7 +66,7 @@ final class Local3BServer: @unchecked Sendable {
         }
 
         let alreadyRunning = locked {
-            if let process, process.isRunning, port == config.localPort { return true }
+            if let running = self.process, running.isRunning, self.port == config.localPort { return true }
             return false
         }
         if alreadyRunning {

@@ -300,7 +300,7 @@ final class ModelHostClient {
     }
 
     private func ensureChild() throws -> ServiceChildProcess {
-        if let child, child.process.isRunning { return child }
+        if let running = self.child, running.process.isRunning { return running }
         child = nil
         let child = try ServiceChildProcess(executable: ChildServicePaths.url(named: "ModelHost"))
         child.onLine = { [weak self] text in
