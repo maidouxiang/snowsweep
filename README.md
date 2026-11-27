@@ -39,8 +39,10 @@
 
 ## 下载安装包（macOS，未签名）
 
-不想编译也可以直接用现成包：本仓 `dist/` 目录按版本存放 macOS 安装包，
-配套 `dist/SHA256SUMS.txt` 校验值。
+不想编译也可以直接用现成包。
+
+- **GitHub：[Releases](https://github.com/maidouxiang/snowsweep/releases)**（推荐，带版本说明与下载计数）
+- **Gitee 镜像**：本仓 `dist/` 目录按版本存放同名 zip，配套 `dist/SHA256SUMS.txt` 校验值
 
 | 版本 | 文件 | 校验 |
 | --- | --- | --- |
