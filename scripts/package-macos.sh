@@ -20,7 +20,12 @@ APP="$WORK/雪.app"
 trap 'rm -rf "$WORK"' EXIT
 
 echo "== 1/4 构建并组装到 $APP =="
-SNOWSWEEP_INSTALL_PATH="$APP" SNOWSWEEP_SIGN_IDENTITY= ./install-selfuse.sh >/dev/null
+LOG="$WORK/build.log"
+if ! SNOWSWEEP_INSTALL_PATH="$APP" SNOWSWEEP_SIGN_IDENTITY= ./install-selfuse.sh >"$LOG" 2>&1; then
+  echo "构建失败，最后 80 行日志："
+  tail -80 "$LOG"
+  exit 1
+fi
 
 echo "== 2/4 清除打包机绝对路径 =="
 python3 scripts/strip-local-paths.py "$APP" || true
