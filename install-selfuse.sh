@@ -27,7 +27,7 @@ cd "$(dirname "$0")"
 
 APP_NAME="雪"
 BUNDLE_ID="com.selfuse.xue"
-INSTALLED="/Applications/${APP_NAME}.app"
+INSTALLED="${SNOWSWEEP_INSTALL_PATH:-/Applications/${APP_NAME}.app}"
 BUILD_DIR=".build/release"
 STAGE=".build/selfuse-stage/${APP_NAME}.app"
 TOOLS_DIR="$HOME/Library/Application Support/雪"
