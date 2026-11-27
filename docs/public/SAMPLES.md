@@ -35,7 +35,7 @@ xue-sample-<uuid>.zip
   "schema": "xue.sample/v1",
   "sample_id": "uuid",
   "created_at": "2026-11-27T10:00:00+08:00",
-  "app":    { "version": "0.9.34", "build": "0.9.34", "bundle_id": "com.selfuse.xue" },
+  "app":    { "version": "0.9.35", "build": "0.9.35", "bundle_id": "com.selfuse.xue" },
   "host":   { "macos": "26.x", "arch": "arm64", "locale": "zh_CN" },
   "rules":  { "version": "0.5.2", "sha256": "…" },
   "intent": { "category": "unknown", "query_redacted": "清理某个应用缓存" },
@@ -91,7 +91,8 @@ xue-sample-<uuid>.zip
 
 ## 七、导出工具
 
-导出器从 **V0.9.33** 起随源码提供，命令行目标 `SampleExport`。它只读输入、脱敏、写包，**不扫描、不删除、不联网**。
+导出器从 **V0.9.33** 起随源码提供；**V0.9.35** 起应用内也有入口（规则缺失报告页的“导出样本包（脱敏）”按钮）。
+命令行目标 `SampleExport` 与界面共用同一套 `SampleExporter`。它只读输入、脱敏、写包，**不扫描、不删除、不联网**。
 
 ```bash
 # 1. 把应用里导出的“规则缺失报告”（.json）转成脱敏样本

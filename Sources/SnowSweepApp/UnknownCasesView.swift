@@ -260,6 +260,59 @@ final class UnknownCasesModel: ObservableObject {
         }
     }
 
+    /// 导出 `xue.sample/v1` 样本包。全程本地：读内置规则库算校验值、脱敏、写包、打 zip。
+    /// 不扫描、不联网；只把当前这份报告转成可公开的结构化样本。
+    func exportSample(_ report: UnknownCase) {
+        guard let builtinURL, let builtinBook else {
+            errorText = "读不到内置规则库，无法生成样本。"
+            return
+        }
+        do {
+            let digest = try SampleExporter.ruleBookDigest(at: builtinURL)
+            let sample = SampleExporter.sample(
+                from: report,
+                ruleBookVersion: builtinBook.version,
+                ruleBookSHA256: digest
+            )
+            let bundle = FileManager.default.temporaryDirectory
+                .appendingPathComponent("雪样本-\(report.id.prefix(8))", isDirectory: true)
+            try? FileManager.default.removeItem(at: bundle)
+            try SampleExporter.write(sample, to: bundle)
+
+            let panel = NSSavePanel()
+            panel.nameFieldStringValue = "雪样本-\(report.id.prefix(8)).zip"
+            panel.allowedContentTypes = [.zip]
+            panel.title = "保存脱敏样本包"
+            guard panel.runModal() == .OK, let url = panel.url else { return }
+
+            if FileManager.default.fileExists(atPath: url.path) {
+                try FileManager.default.removeItem(at: url)
+            }
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
+            process.arguments = ["-c", "-k", "--sequesterRsrc", "--keepParent", bundle.path, url.path]
+            try process.run()
+            process.waitUntilExit()
+            guard process.terminationStatus == 0 else {
+                throw SampleExportFailure.zipFailed(process.terminationStatus)
+            }
+            notice = "已导出脱敏样本包。上传前请自己再读一遍 sample.json。"
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+        } catch {
+            errorText = "导出样本失败：\(error.localizedDescription)"
+        }
+    }
+
+    private enum SampleExportFailure: LocalizedError {
+        case zipFailed(Int32)
+
+        var errorDescription: String? {
+            switch self {
+            case .zipFailed(let code): return "打包失败，ditto 退出码 \(code)"
+            }
+        }
+    }
+
     func exportTemplate() {
         do {
             let data = RuleDraftImporter.templateData()
@@ -389,6 +442,8 @@ struct UnknownCasesView: View {
                 Button("导出 .md + .json") { model.export(report) }
                     .buttonStyle(.borderedProminent)
                     .tint(SnowSkin.accent)
+                Button("导出样本包（脱敏）") { model.exportSample(report) }
+                    .help("生成 xue.sample/v1 样本包：路径模板化、原话脱敏，不含截图与原始路径")
                 Button("删除") { model.requestDelete(report) }
                     .foregroundStyle(.red)
             }

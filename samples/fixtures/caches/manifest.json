@@ -1,15 +1,15 @@
 {
-  "created_at" : "2026-11-26T19:43:56Z",
+  "created_at" : "2026-11-27T03:00:36Z",
   "files" : [
     {
       "bytes" : 1422,
       "name" : "sample.json",
-      "sha256" : "c74de26e0acb23f7f3111131d8504d960654c56c5e08c3a803aebc62b9cff911"
+      "sha256" : "5cb1f88bc0857f10e9dc9850a44c09b8a20934cfea771d1763476b17f2c1da57"
     },
     {
       "bytes" : 242,
       "name" : "scan-summary.json",
-      "sha256" : "7313aaa4c49b44ec78ecbd1eb49d6ddd92b05727904237b7fb270fdae95e1590"
+      "sha256" : "d8ddbeb551f05df5bce62561dd6d54ab557bd3fc051ea871cf394887f104f6c7"
     },
     {
       "bytes" : 844,
@@ -18,6 +18,6 @@
     }
   ],
   "license" : "CC0-1.0",
-  "sample_id" : "4CF22643-E996-4296-B2CE-F46093A7EE1F",
+  "sample_id" : "2170789B-F3D2-4A9A-8B22-E8B23969DE3A",
   "schema" : "xue.sample/v1"
 }
