@@ -2,6 +2,21 @@
 
 格式参考 Keep a Changelog；版本号沿用项目既有节奏（`0.9.x` 阶段内只递增补丁位）。
 
+## [0.9.36] - 2026-11-27
+
+发版流水线（`V0.9.36 · 雪发`）。只打通自动化与修正编译问题，不改判定逻辑、不改规则库。
+
+### Added
+
+- `.github/workflows/release.yml`：推 `v*` 标签即在 macOS runner 上构建、签名、打包并发布 Release 附件；`workflow_dispatch` 只构建不发版
+- `scripts/package-macos.sh`：组装到临时目录 → 等长清除本机路径 → ad-hoc 重签 → 校验 → `ditto` 打包 → 生成 `SHA256SUMS`
+- `scripts/strip-local-paths.py`：把 `#filePath` 编译进二进制的维护者本机路径等长替换为占位路径
+
+### Changed
+
+- `install-selfuse.sh` 支持 `SNOWSWEEP_INSTALL_PATH` 覆盖安装目标，便于 CI 不触碰 `/Applications`
+- 树图单元格的装饰链拆为具名中间变量；闭包内可选自属性改为显式绑定，修复新编译器下的类型检查超时与条件绑定报错
+
 ## [0.9.35-dist] - 2026-11-27
 
 首个随仓库分发的预编译安装包（`dist/snowsweep-macos-v0.9.35.zip`）。仅分发，不改代码。

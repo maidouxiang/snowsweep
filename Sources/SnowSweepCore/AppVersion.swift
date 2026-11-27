@@ -21,13 +21,13 @@ public struct AppVersion: Codable, Hashable, Sendable {
         return "\(display)（\(devTag)）"
     }
 
-    /// V0.9.35 雪集：规则缺失报告页新增“导出样本包（脱敏）”入口，
-    /// 一键生成 `xue.sample/v1` zip；导出逻辑与命令行共用 `SampleExporter`。
-    /// 不新增删除能力，不改 4B 模型，不联网。
+    /// V0.9.36 雪发：把「打 tag → 云端构建 → 自动发布安装包」接通，
+    /// 并修掉新编译器下无法通过的两处写法（树图单元格修饰链、闭包内可选简写绑定）。
+    /// 不改判定逻辑、不改规则库、不联网。
     public static let current = AppVersion(
-        number: "0.9.35",
-        codeName: "雪集",
-        stage: "应用内样本导出入口",
+        number: "0.9.36",
+        codeName: "雪发",
+        stage: "发版流水线",
         devTag: nil
     )
 }
