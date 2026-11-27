@@ -2205,32 +2205,37 @@ private struct TreemapView: View {
             ZStack(alignment: .topLeading) {
                 ForEach(Array(frames.enumerated()), id: \.offset) { index, entry in
                     let active = entry.item.id == selectedID || entry.item.id == hoveredID
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(entry.item.isDirectory
-                               ? treemapColor(index).opacity(0.72)
-                               : Color.gray.opacity(0.55))
-                        .overlay(
-                            Group {
-                                if entry.rect.width > 46 && entry.rect.height > 20 {
-                                    VStack(alignment: .leading, spacing: 1) {
-                                        Text(entry.item.isAggregate ? entry.item.name : folderCN(entry.item.name))
-                                            .font(entry.rect.height > 52 ? .caption.weight(.medium) : .caption2.weight(.medium))
-                                            .foregroundStyle(.white).lineLimit(1)
-                                        if entry.rect.height > 52 && entry.rect.width > 58 {
-                                            Text(entry.item.isPartial ? "读不到" : SystemMetrics.bytesText(entry.item.bytes))
-                                                .font(.caption2).foregroundStyle(.white.opacity(0.85))
-                                        }
-                                    }
-                                    .padding(entry.rect.height > 52 ? 6 : 4)
+                    let fillColor: Color = entry.item.isDirectory
+                        ? treemapColor(index).opacity(0.72)
+                        : Color.gray.opacity(0.55)
+                    let cellPadding: CGFloat = entry.rect.height > 52 ? 6 : 4
+                    let titleFont: Font = entry.rect.height > 52
+                        ? .caption.weight(.medium)
+                        : .caption2.weight(.medium)
+                    let label = Group {
+                        if entry.rect.width > 46 && entry.rect.height > 20 {
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(entry.item.isAggregate ? entry.item.name : folderCN(entry.item.name))
+                                    .font(titleFont)
+                                    .foregroundStyle(.white).lineLimit(1)
+                                if entry.rect.height > 52 && entry.rect.width > 58 {
+                                    Text(entry.item.isPartial ? "读不到" : SystemMetrics.bytesText(entry.item.bytes))
+                                        .font(.caption2).foregroundStyle(.white.opacity(0.85))
                                 }
-                            },
-                            alignment: .topLeading
-                        )
+                            }
+                            .padding(cellPadding)
+                        }
+                    }
+                    let borderColor: Color = active ? Color.white.opacity(0.95) : Color.white.opacity(0.12)
+                    let borderWidth: CGFloat = active ? 2 : 1
+                    let cell = RoundedRectangle(cornerRadius: 6)
+                        .fill(fillColor)
+                        .overlay(label, alignment: .topLeading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 6)
-                                .stroke(active ? Color.white.opacity(0.95) : Color.white.opacity(0.12),
-                                        lineWidth: active ? 2 : 1)
+                                .stroke(borderColor, lineWidth: borderWidth)
                         )
+                    cell
                         .frame(width: max(4, entry.rect.width - 2), height: max(4, entry.rect.height - 2))
                         .contentShape(RoundedRectangle(cornerRadius: 6))
                         .onTapGesture {
