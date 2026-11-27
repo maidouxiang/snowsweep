@@ -1,1 +1,1 @@
-173d10e58943995eaafdf3ded0e568cdcfd880d31b83c11f3c5c7d65039408b7  snowsweep-macos-v0.9.35.zip
+714ba2d29bc15d05d9c8a5d5da2496f68b8c0a269d1d7396a7690379bd83706c  snowsweep-macos-v0.9.36.zip

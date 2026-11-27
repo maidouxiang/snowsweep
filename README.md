@@ -32,7 +32,7 @@
 
 ## 当前状态
 
-- 版本：`v0.9.35 · 雪集`（pre-1.0，未发布正式版）
+- 版本：`v0.9.36 · 雪发`（pre-1.0，未发布正式版）
 - 规则库：`Rules/rules.json`，`version 0.5.2`，**89 条规则**，**30 条保护路径**
 - 测试：**392 项**（双场景 CMake/CI 各 1 项 live skip）
 - V1.0 尚未开工；当前版本为可复现构建的源码快照
@@ -46,7 +46,7 @@
 
 | 版本 | 文件 | 校验 |
 | --- | --- | --- |
-| v0.9.35 · 雪集 | [`dist/snowsweep-macos-v0.9.35.zip`](dist/snowsweep-macos-v0.9.35.zip)（约 11 MB） | 见 `dist/SHA256SUMS.txt` |
+| v0.9.36 · 雪发 | [`dist/snowsweep-macos-v0.9.36.zip`](dist/snowsweep-macos-v0.9.36.zip)（约 11.3 MB） | 见 `dist/SHA256SUMS.txt` |
 
 安装步骤：
 

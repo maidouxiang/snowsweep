@@ -1,13 +1,16 @@
 # dist/ — 预编译安装包
 
-这里按版本存放 macOS 安装包（`.zip`，内含 `雪.app`，双击解压即可）。
+这里存放**当前版本**的 macOS 安装包（`.zip`，内含 `雪.app`，双击解压即可）。
 对应的源码在本仓库同一版本的 tag 中，满足 GPL-3.0 的源码提供义务。
+
+历史版本不再堆在仓库里（避免仓库体积随版本线性增胖），
+请到 [Releases](https://github.com/maidouxiang/snowsweep/releases) 按 tag 下载对应附件。
 
 ## 当前版本
 
 | 版本 | 文件 | 大小 |
 | --- | --- | --- |
-| v0.9.35 · 雪集 | `snowsweep-macos-v0.9.35.zip` | 约 11 MB |
+| v0.9.36 · 雪发 | `snowsweep-macos-v0.9.36.zip` | 约 11.3 MB |
 
 ## 校验
 

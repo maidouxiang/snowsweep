@@ -26,6 +26,10 @@ jobs:
       - name: 赋予脚本执行权限
         run: chmod +x install-selfuse.sh scripts/*.sh scripts/*.py
 
+      - name: 读取版本号
+        id: ver
+        run: echo "version=$(./version.sh | sed 's/ · .*//' | sed 's/^V//')" >> "$GITHUB_OUTPUT"
+
       - name: 打包（组装 + ad-hoc 签名 + 去本机路径 + zip）
         run: ./scripts/package-macos.sh dist
 
@@ -34,8 +38,8 @@ jobs:
         with:
           name: snowsweep-macos-package
           path: |
-            dist/*.zip
-            dist/SHA256SUMS-*.txt
+            dist/snowsweep-macos-v${{ steps.ver.outputs.version }}.zip
+            dist/SHA256SUMS-v${{ steps.ver.outputs.version }}.txt
           if-no-files-found: error
 
       - name: 发布到 Release
@@ -43,8 +47,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/*.zip
-            dist/SHA256SUMS-*.txt
+            dist/snowsweep-macos-v${{ steps.ver.outputs.version }}.zip
+            dist/SHA256SUMS-v${{ steps.ver.outputs.version }}.txt
           # pre-1.0 一律标预发布；推到 v1.x 后自动变正式版
           prerelease: ${{ startsWith(github.ref_name, 'v0.') }}
           generate_release_notes: false
